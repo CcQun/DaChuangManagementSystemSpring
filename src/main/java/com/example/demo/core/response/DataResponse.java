@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 public class DataResponse<T> {
     private int code;
-    private String msg;
+    private String ms;
 
     private T data;
 }
