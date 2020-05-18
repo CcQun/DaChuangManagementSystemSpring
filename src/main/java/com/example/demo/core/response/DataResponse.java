@@ -1,15 +1,13 @@
 package com.example.demo.core.response;
 
+
 import lombok.Data;
 
 /**
  * @Author CcQun
- * @Date 2020/5/16 13:21
+ * @Date 2020/5/16 12:44
  */
 @Data
-public class DataResponse<T> {
-    private int code;
-    private String ms;
-
+public class DataResponse<T> extends BaseResponse {
     private T data;
 }

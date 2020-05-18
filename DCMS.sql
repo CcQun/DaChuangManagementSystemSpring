@@ -6,7 +6,7 @@ USE DCMS;
 
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2020/5/16 9:36:35                            */
+/* Created on:     2020/5/18 8:03:45                            */
 /*==============================================================*/
 
 
@@ -16,13 +16,13 @@ drop table if exists APPLY_PROJECT;
 
 drop table if exists BLINK;
 
-drop table if exists GROUP;
-
 drop table if exists PROJECT;
 
 drop table if exists STUDENT;
 
 drop table if exists TEACHER;
+
+drop table if exists TEAM;
 
 /*==============================================================*/
 /* Table: APPLY_BLINK                                           */
@@ -31,6 +31,7 @@ create table APPLY_BLINK
 (
     Blink_Number   int not null,
     Student_Number int not null,
+    Blink_Approval int,
     primary key (Blink_Number, Student_Number)
 );
 
@@ -39,8 +40,9 @@ create table APPLY_BLINK
 /*==============================================================*/
 create table APPLY_PROJECT
 (
-    Project_Number int not null,
-    Student_Number int not null,
+    Project_Number   int not null,
+    Student_Number   int not null,
+    Project_Approval int,
     primary key (Project_Number, Student_Number)
 );
 
@@ -49,24 +51,15 @@ create table APPLY_PROJECT
 /*==============================================================*/
 create table BLINK
 (
-    Blink_Number   int      not null,
-    Student_Number int      not null,
-    Blink_Title    char(50) not null,
-    Blink_Content  text     not null,
-    Create_Time    datetime not null,
+    Blink_Number   int         not null,
+    Student_Number int         not null,
+    Blink_Title    char(50)    not null,
+    Blink_Content  text        not null,
+    Blink_College  varchar(20) not null,
+    Blink_Field    varchar(20) not null,
+    Blink_State    int,
+    Create_Time    datetime    not null,
     primary key (Blink_Number)
-);
-
-/*==============================================================*/
-/* Table: GROUP                                                 */
-/*==============================================================*/
-create table GROUP
-(
-    Project_Number    int      not null,
-    Student_Number    int      not null,
-    Group_Description text,
-    Join_Time         datetime not null,
-    primary key (Project_Number, Student_Number)
 );
 
 /*==============================================================*/
@@ -74,13 +67,16 @@ create table GROUP
 /*==============================================================*/
 create table PROJECT
 (
-    Project_Number        int      not null,
+    Project_Number        int         not null,
     Create_Teacher_Number int,
     Direct_Teacher_Number int,
     Create_Student_Number int,
-    Project_Name          char(50) not null,
+    Project_Name          char(50)    not null,
     Project_Description   text,
-    Create_Time           datetime not null,
+    Project_College       char(20)    not null,
+    Project_Field         varchar(20) not null,
+    Project_State         int,
+    Create_Time           datetime    not null,
     primary key (Project_Number)
 );
 
@@ -114,6 +110,18 @@ create table TEACHER
     primary key (Teacher_Number)
 );
 
+/*==============================================================*/
+/* Table: TEAM                                                  */
+/*==============================================================*/
+create table TEAM
+(
+    Project_Number    int      not null,
+    Student_Number    int      not null,
+    Group_Description text,
+    Join_Time         datetime not null,
+    primary key (Project_Number, Student_Number)
+);
+
 alter table APPLY_BLINK
     add constraint FK_APPLY_BLINK foreign key (Blink_Number)
         references BLINK (Blink_Number) on delete restrict on update restrict;
@@ -134,14 +142,6 @@ alter table BLINK
     add constraint FK_issue foreign key (Student_Number)
         references STUDENT (Student_Number) on delete restrict on update restrict;
 
-alter table GROUP
-    add constraint FK_GROUP foreign key (Project_Number)
-        references PROJECT (Project_Number) on delete restrict on update restrict;
-
-alter table GROUP
-    add constraint FK_GROUP2 foreign key (Student_Number)
-        references STUDENT (Student_Number) on delete restrict on update restrict;
-
 alter table PROJECT
     add constraint FK_direct foreign key (Direct_Teacher_Number)
         references TEACHER (Teacher_Number) on delete restrict on update restrict;
@@ -153,6 +153,16 @@ alter table PROJECT
 alter table PROJECT
     add constraint FK_tcreate foreign key (Create_Teacher_Number)
         references TEACHER (Teacher_Number) on delete restrict on update restrict;
+
+alter table TEAM
+    add constraint FK_TEAM foreign key (Project_Number)
+        references PROJECT (Project_Number) on delete restrict on update restrict;
+
+alter table TEAM
+    add constraint FK_TEAM2 foreign key (Student_Number)
+        references STUDENT (Student_Number) on delete restrict on update restrict;
+
+
 
 /*==============================================================*/
 /* Init Database Data                                           */
@@ -179,9 +189,9 @@ values (17301113, '张影', '女', '软件学院', DATE('2017-09-01'), '软件�
         'E10ADC3949BA59ABBE56E057F20F883E');
 
 insert into TEACHER
-values (10000001, '李宇', '男', '软件学院','李宇:软件学院的一位老师。',
+values (10000001, '李宇', '男', '软件学院', '李宇:软件学院的一位老师。',
         'E10ADC3949BA59ABBE56E057F20F883E');
 
 insert into TEACHER
-values (10000002, '曾立刚', '男', '软件学院','曾立刚:软件学院的一位老师。',
+values (10000002, '曾立刚', '男', '软件学院', '曾立刚:软件学院的一位老师。',
         'E10ADC3949BA59ABBE56E057F20F883E');
