@@ -27,8 +27,8 @@ public class BlinkController {
         BaseResponse response = new BaseResponse();
         ApplyBlinkPK applyblinkPK=new ApplyBlinkPK();
 
-        int blinknum=Integer.parseInt(req.getParameter("blink_number"));
-        int studentnum=Integer.parseInt(req.getParameter("student_number"));
+        Integer blinknum=Integer.parseInt(req.getParameter("blink_number"));
+        Integer studentnum=Integer.parseInt(req.getParameter("student_number"));
 
         applyblinkPK.setBlinknum(blinknum);
         applyblinkPK.setStudentnum(studentnum);

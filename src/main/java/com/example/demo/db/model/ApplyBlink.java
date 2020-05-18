@@ -1,19 +1,20 @@
 package com.example.demo.db.model;
 
 import lombok.Data;
+import org.springframework.data.domain.Persistable;
 
 import javax.persistence.*;
 
 @Entity
 @Data
 @Table(name="APPLY_BLINK")
-public class ApplyBlink {
+public class ApplyBlink implements Persistable {
     @EmbeddedId
     private ApplyBlinkPK applyBlinkPK;
 
-    private int Blink_Approval;
+    private Integer Blink_Approval;
 
-    public int getBlink_Approval() {
+    public Integer getBlink_Approval() {
         return Blink_Approval;
     }
 
@@ -33,4 +34,13 @@ public class ApplyBlink {
         return "applyblink= "+getApplyBlinkPK().toString();
     }
 
+    @Override
+    public Object getId() {
+        return applyBlinkPK;
+    }
+
+    @Override
+    public boolean isNew() {
+        return true;
+    }
 }
