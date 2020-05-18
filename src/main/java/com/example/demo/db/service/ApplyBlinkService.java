@@ -13,8 +13,11 @@ public class ApplyBlinkService {
         this.applyblinkMapper = applyblinkMapper;
     }
 
-    public void insert(ApplyBlink applyBlink){
-        System.out.println(applyBlink.toString());
-        applyblinkMapper.save(applyBlink);
+    public boolean insert(ApplyBlink applyBlink){
+        if(!applyblinkMapper.save(applyBlink).equals(applyBlink)){
+            return true;
+        }else{
+            return false;
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.core.response.BaseResponse;
 import com.example.demo.db.model.ApplyBlink;
 import com.example.demo.db.model.ApplyBlinkPK;
 import com.example.demo.db.service.ApplyBlinkService;
@@ -22,11 +23,13 @@ public class BlinkController {
     }
 
     @RequestMapping("/applyBlink")
-    public void joinBlink(HttpServletRequest req, HttpServletResponse resp) {
+    public BaseResponse joinBlink(HttpServletRequest req, HttpServletResponse resp) {
+        BaseResponse response = new BaseResponse();
+        ApplyBlinkPK applyblinkPK=new ApplyBlinkPK();
+
         int blinknum=Integer.parseInt(req.getParameter("blink_number"));
         int studentnum=Integer.parseInt(req.getParameter("student_number"));
 
-        ApplyBlinkPK applyblinkPK=new ApplyBlinkPK();
         applyblinkPK.setBlinknum(blinknum);
         applyblinkPK.setStudentnum(studentnum);
 
@@ -34,7 +37,13 @@ public class BlinkController {
         applyblink.setApplyBlinkPK(applyblinkPK);
         applyblink.setBlink_Approval(0);
 
-        applyBlinkService.insert(applyblink);
+        if(applyBlinkService.insert(applyblink)){
+            response.setCode(1);
+            response.setMsg("Success!");
+        }else{
+            response.setCode(0);
+            response.setMsg("False");
+        }
+        return response;
     }
-
 }
