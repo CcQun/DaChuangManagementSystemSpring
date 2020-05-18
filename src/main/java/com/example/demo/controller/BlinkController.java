@@ -32,6 +32,7 @@ public class BlinkController {
 
         ApplyBlink applyblink=new ApplyBlink();
         applyblink.setApplyBlinkPK(applyblinkPK);
+        applyblink.setBlink_Approval(0);
 
         applyBlinkService.insert(applyblink);
     }
