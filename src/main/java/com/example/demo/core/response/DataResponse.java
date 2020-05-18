@@ -10,6 +10,5 @@ import lombok.Data;
 public class DataResponse<T> {
     private int code;
     private String msg;
-
     private T data;
 }
