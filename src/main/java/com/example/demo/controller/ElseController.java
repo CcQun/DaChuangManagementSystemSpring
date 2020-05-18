@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.core.Utils;
 import com.example.demo.core.request.LoginRequest;
 import com.example.demo.core.response.DataResponse;
 import com.example.demo.db.model.Student;
@@ -16,7 +17,8 @@ import java.util.List;
  * @Author CcQun、ZyMeng、ZYing、LhRan、LcYao
  * @Date 2020/5/16 13:28
  */
-@RestController
+@RestController()
+@RequestMapping("/api")
 public class ElseController {
     private final StudentService studentService;
 
@@ -27,11 +29,16 @@ public class ElseController {
     @RequestMapping("/login")
     public DataResponse login(@RequestBody LoginRequest request){
         List<Student> list = studentService.findAllByStudentNumber(request.getStudent_number());
-        String MD5Password = request.getStudent_password();
+        String MD5Password = Utils.getMD5(request.getStudent_password());
         DataResponse response = new DataResponse();
-        if(MD5Password.equals(list.get(0).getStudentPassword())){
-            response.setCode(1);
-            return response;
+        if(list.size() > 0) {
+            if (MD5Password.equals(list.get(0).getStudentPassword())) {
+                response.setCode(1);
+                return response;
+            } else {
+                response.setCode(0);
+                return response;
+            }
         }else{
             response.setCode(0);
             return response;

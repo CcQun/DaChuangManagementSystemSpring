@@ -21,4 +21,7 @@ public class Blink {
     private String blinkTitle;
     private String blinkContent;
     private Date creatTime;
+    private String blinkCollege;
+    private String blinkField;
+    private Integer blinkState;
 }

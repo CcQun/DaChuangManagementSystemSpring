@@ -13,7 +13,8 @@ import javax.servlet.http.HttpServletResponse;
  * @Author CcQun、ZyMeng、ZYing、LhRan、LcYao
  * @Date 2020/5/16 7:39
  */
-@RestController("/blink")
+@RestController()
+@RequestMapping("/blink")
 public class BlinkController {
 
     private final ApplyBlinkService applyBlinkService;
