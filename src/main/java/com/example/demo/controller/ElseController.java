@@ -18,7 +18,7 @@ import java.util.List;
  * @Date 2020/5/16 13:28
  */
 @RestController()
-@RequestMapping("/api")
+@RequestMapping("/usr")
 public class ElseController {
     private final StudentService studentService;
 
@@ -34,6 +34,7 @@ public class ElseController {
         if(list.size() > 0) {
             if (MD5Password.equals(list.get(0).getStudentPassword())) {
                 response.setCode(1);
+                response.setMsg(list.get(0).getStudentName());
                 return response;
             } else {
                 response.setCode(0);
