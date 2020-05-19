@@ -13,17 +13,11 @@ import java.util.List;
  * @Date 2020/5/16 13:26
  */
 @Service
-public class StudentService {
-    private final StudentMapper studentMapper;
-
-    public StudentService(StudentMapper studentMapper) {
-        this.studentMapper = studentMapper;
-    }
-
+public class StudentService extends BaseService<Student,Integer,StudentMapper>{
     public List<Student> findAllByStudentNumber(int studentNumber){
         Student student = Student.builder().studentNumber(studentNumber).build();
         Example<Student> example = Example.of(student);
-        List<Student> list = studentMapper.findAll(example);
+        List<Student> list = mapper.findAll(example);
         return list;
     }
 }
