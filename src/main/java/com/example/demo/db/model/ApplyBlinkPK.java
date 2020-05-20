@@ -6,7 +6,9 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.io.Serializable;
 
-
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Embeddable
 public class ApplyBlinkPK implements Serializable {
 
@@ -14,20 +16,6 @@ public class ApplyBlinkPK implements Serializable {
     private Integer blinknum;
     @Column(name="Student_Number")
     private Integer studentnum;
-
-    public Integer getBlinknum() {
-        return blinknum;
-    }
-
-    public void setBlinknum(Integer blinknum) { this.blinknum = blinknum; }
-
-    public Integer getStudentnum() {
-        return studentnum;
-    }
-
-    public void setStudentnum(Integer studentnum) {
-        this.studentnum = studentnum;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -47,6 +35,6 @@ public class ApplyBlinkPK implements Serializable {
         return result;
     }
     public String toString(){
-        return "applyblinkPK: blinknum= "+getBlinknum()+",  "+"studentnum= "+getStudentnum();
+        return "applyblinkPK: blinknum= "+blinknum+",  "+"studentnum= "+studentnum;
     }
 }

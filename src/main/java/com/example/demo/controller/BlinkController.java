@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.core.Utils;
+import com.example.demo.core.request.ApplyBlinkRequest;
 import com.example.demo.core.request.PublishBlinkRequest;
 import com.example.demo.core.response.BaseResponse;
 import com.example.demo.db.model.ApplyBlink;
@@ -13,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.List;
 
@@ -58,19 +57,17 @@ public class BlinkController {
     }
 
     @RequestMapping("/applyBlink")
-    public BaseResponse joinBlink(HttpServletRequest req, HttpServletResponse resp) {
+    public BaseResponse joinBlink(@RequestBody ApplyBlinkRequest request) {
         BaseResponse response = new BaseResponse();
-        ApplyBlinkPK applyblinkPK = new ApplyBlinkPK();
+        ApplyBlinkPK applyblinkPK = ApplyBlinkPK.builder()
+                .blinknum(request.getBlink_number())
+                .studentnum(request.getStudent_number())
+                .build();
 
-        Integer blinknum = Integer.parseInt(req.getParameter("blink_number"));
-        Integer studentnum = Integer.parseInt(req.getParameter("student_number"));
-
-        applyblinkPK.setBlinknum(blinknum);
-        applyblinkPK.setStudentnum(studentnum);
-
-        ApplyBlink applyblink = new ApplyBlink();
-        applyblink.setApplyBlinkPK(applyblinkPK);
-        applyblink.setBlink_Approval(0);
+        ApplyBlink applyblink = ApplyBlink.builder()
+                .applyBlinkPK(applyblinkPK)
+                .Blink_Approval(0)
+                .build();
 
         if (applyBlinkService.insert(applyblink)) {
             response.setCode(1);
