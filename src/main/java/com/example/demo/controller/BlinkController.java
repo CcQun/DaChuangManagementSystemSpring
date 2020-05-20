@@ -1,18 +1,28 @@
 package com.example.demo.controller;
 
 import com.example.demo.core.request.ApplyBlinkRequest;
+import com.example.demo.core.request.MyBlinkRequest;
 import com.example.demo.core.request.PublishBlinkRequest;
 import com.example.demo.core.response.BaseResponse;
+import com.example.demo.core.response.ListResponse;
 import com.example.demo.db.model.ApplyBlink;
 import com.example.demo.db.model.ApplyBlinkPK;
 import com.example.demo.db.model.Blink;
+import com.example.demo.db.model.Student;
 import com.example.demo.db.service.ApplyBlinkService;
 import com.example.demo.db.service.BlinkService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -36,6 +46,7 @@ public class BlinkController {
     }
 
 
+    //发布blink
     @RequestMapping("/publishBlink")
     public BaseResponse publishBlink(@RequestBody PublishBlinkRequest request) {
 
@@ -75,6 +86,16 @@ public class BlinkController {
             response.setCode(0);
             response.setMsg("False");
         }
+        return response;
+    }
+
+    //查看自己发布的blink
+    @RequestMapping("/myBlink")
+    public ListResponse<Blink> myBlink(@RequestBody MyBlinkRequest request){
+        Blink blink = Blink.builder().student_number(request.getStudent_number()).build();
+        List<Blink> list = blinkService.findAll(blink);
+        ListResponse<Blink> response = new ListResponse<>();
+        response.setData(list);
         return response;
     }
 
