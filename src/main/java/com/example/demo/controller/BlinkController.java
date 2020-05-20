@@ -48,15 +48,6 @@ public class BlinkController {
         this.blinkService = blinkService;
     }
 
-    public static void main(String[] args) {
-        String str1 = "abcdefg";
-        int result1 = str1.indexOf("ab");
-        if(result1 != -1){
-            System.out.println("字符串str中包含子串“ab”"+result1);
-        }else{
-            System.out.println("字符串str中不包含子串“ab”"+result1);
-        }
-    }
 
     //发布blink
     @RequestMapping("/publishBlink")
