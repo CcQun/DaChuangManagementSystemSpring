@@ -1,6 +1,5 @@
 package com.example.demo.controller;
 
-import com.example.demo.core.Utils;
 import com.example.demo.core.request.ApplyBlinkRequest;
 import com.example.demo.core.request.PublishBlinkRequest;
 import com.example.demo.core.response.BaseResponse;
