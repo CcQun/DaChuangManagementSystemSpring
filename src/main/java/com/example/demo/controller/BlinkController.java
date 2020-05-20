@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.core.request.ApplyBlinkRequest;
 import com.example.demo.core.request.MyBlinkRequest;
 import com.example.demo.core.request.PublishBlinkRequest;
+import com.example.demo.core.request.SearchBlinkRequest;
 import com.example.demo.core.response.BaseResponse;
 import com.example.demo.core.response.ListResponse;
 import com.example.demo.db.model.ApplyBlink;
@@ -11,6 +12,8 @@ import com.example.demo.db.model.Blink;
 import com.example.demo.db.model.Student;
 import com.example.demo.db.service.ApplyBlinkService;
 import com.example.demo.db.service.BlinkService;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.jpa.domain.Specification;
@@ -45,6 +48,15 @@ public class BlinkController {
         this.blinkService = blinkService;
     }
 
+    public static void main(String[] args) {
+        String str1 = "abcdefg";
+        int result1 = str1.indexOf("ab");
+        if(result1 != -1){
+            System.out.println("字符串str中包含子串“ab”"+result1);
+        }else{
+            System.out.println("字符串str中不包含子串“ab”"+result1);
+        }
+    }
 
     //发布blink
     @RequestMapping("/publishBlink")
@@ -109,5 +121,27 @@ public class BlinkController {
             }
         }
         return maxBlinkNumber;
+    }
+    //查询blink
+    @RequestMapping("/queryblink")
+    public List<Blink> queryblink(){
+        List<Blink> blinks = blinkService.findAll();
+        return blinks;
+    }
+    //关键字搜索blink
+    @RequestMapping("/searchblink")
+    public List<Blink> searchblink(@RequestBody SearchBlinkRequest request) {
+        String str = request.getKeywords();
+        List<Blink> blinks = blinkService.findAll();
+        List<Blink> searchedblink = new ArrayList<Blink>();
+        for (int i = 0; i<blinks.size(); i++){
+            if(blinks.get(i).getBlink_content().indexOf(str)!= -1){
+                searchedblink.add(blinks.get(i));
+            }
+            else if(blinks.get(i).getBlink_title().indexOf(str)!= -1){
+                searchedblink.add(blinks.get(i));
+            }
+        }
+        return searchedblink;
     }
 }
