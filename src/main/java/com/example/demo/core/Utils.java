@@ -1,6 +1,10 @@
 package com.example.demo.core;
 
+import com.example.demo.db.model.Blink;
+import com.example.demo.db.service.BlinkService;
+
 import java.security.MessageDigest;
+import java.util.List;
 
 /**
  * @Author CcQun
@@ -16,10 +20,11 @@ public class Utils {
             messageDigest.update(message.getBytes("UTF-8"));
             byte[] byteArray = messageDigest.digest();
             for (int i = 0; i < byteArray.length; i++) {
-                if (Integer.toHexString(0xFF & byteArray[i]).length() == 1)
+                if (Integer.toHexString(0xFF & byteArray[i]).length() == 1) {
                     md5StrBuff.append("0").append(Integer.toHexString(0xFF & byteArray[i]));
-                else
+                } else {
                     md5StrBuff.append(Integer.toHexString(0xFF & byteArray[i]));
+                }
             }
         } catch (Exception e) {
             throw new RuntimeException();

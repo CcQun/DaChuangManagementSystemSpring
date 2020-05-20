@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.core.Utils;
 import com.example.demo.core.request.LoginRequest;
+import com.example.demo.core.response.BaseResponse;
 import com.example.demo.core.response.DataResponse;
 import com.example.demo.db.model.Student;
 import com.example.demo.db.service.ApplyBlinkService;
@@ -27,14 +28,14 @@ public class ElseController {
     }
 
     @RequestMapping("/login")
-    public DataResponse login(@RequestBody LoginRequest request){
+    public BaseResponse login(@RequestBody LoginRequest request){
         List<Student> list = studentService.findAllByStudentNumber(request.getStudent_number());
         String MD5Password = Utils.getMD5(request.getStudent_password());
-        DataResponse response = new DataResponse();
+        BaseResponse response = new BaseResponse();
         if(list.size() > 0) {
-            if (MD5Password.equals(list.get(0).getStudentPassword())) {
+            if (MD5Password.equals(list.get(0).getStudent_password())) {
                 response.setCode(1);
-                response.setMsg(list.get(0).getStudentName());
+                response.setMsg(list.get(0).getStudent_name());
                 return response;
             } else {
                 response.setCode(0);

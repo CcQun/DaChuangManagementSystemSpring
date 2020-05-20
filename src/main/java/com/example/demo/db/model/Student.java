@@ -1,5 +1,6 @@
 package com.example.demo.db.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,26 +25,27 @@ import java.util.Date;
 public class Student {
     @Id
     @Column(name="Student_Number")
-    private Integer studentNumber;
+    private Integer student_number;
 
     @Column(name="Student_Name")
-    private String studentName;
+    private String student_name;
 
     @Column(name="Student_Gender")
-    private String studentGender;
+    private String student_gender;
 
-    @Column(name="Student_College ")
-    private String studentCollege;
+    @Column(name="Student_College")
+    private String student_college;
 
     @Column(name="Enrollment_Year")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:SS")
     private Date date;
 
     @Column(name="Major")
     private String major;
 
     @Column(name="Student_Introduction")
-    private String studentIntroduction;
+    private String student_introduction;
 
     @Column(name="Student_Password")
-    private String studentPassword;
+    private String student_password;
 }

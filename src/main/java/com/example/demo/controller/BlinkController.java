@@ -1,14 +1,22 @@
 package com.example.demo.controller;
 
+import com.example.demo.core.Utils;
+import com.example.demo.core.request.PublishBlinkRequest;
 import com.example.demo.core.response.BaseResponse;
 import com.example.demo.db.model.ApplyBlink;
 import com.example.demo.db.model.ApplyBlinkPK;
+import com.example.demo.db.model.Blink;
 import com.example.demo.db.service.ApplyBlinkService;
+import com.example.demo.db.service.BlinkService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @Author CcQun、ZyMeng、ZYing、LhRan、LcYao
@@ -18,33 +26,71 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping("/blink")
 public class BlinkController {
 
+    @Autowired
     private final ApplyBlinkService applyBlinkService;
-    public BlinkController(ApplyBlinkService applyBlinkService){
-        this.applyBlinkService=applyBlinkService;
+
+    @Autowired
+    private final BlinkService blinkService;
+
+    public BlinkController(ApplyBlinkService applyBlinkService, BlinkService blinkService) {
+        this.applyBlinkService = applyBlinkService;
+        this.blinkService = blinkService;
+    }
+
+
+    @RequestMapping("/publishBlink")
+    public BaseResponse publishBlink(@RequestBody PublishBlinkRequest request) {
+
+        Blink blink = Blink.builder()
+                .blink_number(getMaxBlinkNumber() + 1)
+                .student_number(request.getStudent_number())
+                .blink_title(request.getBlink_title())
+                .blink_content(request.getBlink_content())
+                .creat_time(new Date())
+                .blink_college(request.getBlink_college())
+                .blink_field(request.getBlink_field())
+                .blink_state(new Integer(0))
+                .build();
+        blinkService.getMapper().save(blink);
+        BaseResponse response = new BaseResponse();
+        response.setCode(1);
+        return response;
     }
 
     @RequestMapping("/applyBlink")
     public BaseResponse joinBlink(HttpServletRequest req, HttpServletResponse resp) {
         BaseResponse response = new BaseResponse();
-        ApplyBlinkPK applyblinkPK=new ApplyBlinkPK();
+        ApplyBlinkPK applyblinkPK = new ApplyBlinkPK();
 
-        Integer blinknum=Integer.parseInt(req.getParameter("blink_number"));
-        Integer studentnum=Integer.parseInt(req.getParameter("student_number"));
+        Integer blinknum = Integer.parseInt(req.getParameter("blink_number"));
+        Integer studentnum = Integer.parseInt(req.getParameter("student_number"));
 
         applyblinkPK.setBlinknum(blinknum);
         applyblinkPK.setStudentnum(studentnum);
 
-        ApplyBlink applyblink=new ApplyBlink();
+        ApplyBlink applyblink = new ApplyBlink();
         applyblink.setApplyBlinkPK(applyblinkPK);
         applyblink.setBlink_Approval(0);
 
-        if(applyBlinkService.insert(applyblink)){
+        if (applyBlinkService.insert(applyblink)) {
             response.setCode(1);
             response.setMsg("Success!");
-        }else{
+        } else {
             response.setCode(0);
             response.setMsg("False");
         }
         return response;
+    }
+
+    //获得最大blink number
+    public Integer getMaxBlinkNumber() {
+        List<Blink> blinks = blinkService.findAll();
+        Integer maxBlinkNumber = 0;
+        for (int i = 0; i < blinks.size(); i++) {
+            if (blinks.get(i).getBlink_number() > maxBlinkNumber) {
+                maxBlinkNumber = blinks.get(i).getBlink_number();
+            }
+        }
+        return maxBlinkNumber;
     }
 }
