@@ -50,4 +50,11 @@ public abstract class AbstractService<E, PK> {
         Page<E> Page = getMapper().findAll(specification, pageable);
         return Page;
     }
+
+    public List<E> findAll(Specification<E> specification) {
+        List<E> list = getMapper().findAll(specification);
+        return list;
+    }
+
+
 }

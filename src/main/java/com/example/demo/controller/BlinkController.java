@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.core.request.ApplyBlinkRequest;
 import com.example.demo.core.request.MyBlinkRequest;
 import com.example.demo.core.request.PublishBlinkRequest;
+import com.example.demo.core.request.SearchBlinkRequest;
 import com.example.demo.core.response.BaseResponse;
 import com.example.demo.core.response.ListResponse;
 import com.example.demo.core.response.custommodel.BlinkWithSName;
@@ -13,11 +14,20 @@ import com.example.demo.db.model.Student;
 import com.example.demo.db.service.ApplyBlinkService;
 import com.example.demo.db.service.BlinkService;
 import com.example.demo.db.service.StudentService;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.web.SpringServletContainerInitializer;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -128,5 +138,29 @@ public class BlinkController {
             }
         }
         return maxBlinkNumber;
+    }
+
+    //查询blink
+    @RequestMapping("/queryblink")
+    public List<Blink> queryblink(){
+        List<Blink> blinks = blinkService.findAll();
+        return blinks;
+    }
+    //关键字搜索blink
+
+    @RequestMapping("/searchblink")
+    public List<Blink> searchblink(@RequestBody SearchBlinkRequest request) {
+        String str = request.getKeywords();
+        List<Blink> blinks = blinkService.findAll();
+        List<Blink> searchedblink = new ArrayList<Blink>();
+        for (int i = 0; i<blinks.size(); i++){
+            if(blinks.get(i).getBlink_content().indexOf(str)!= -1){
+                searchedblink.add(blinks.get(i));
+            }
+            else if(blinks.get(i).getBlink_title().indexOf(str)!= -1){
+                searchedblink.add(blinks.get(i));
+            }
+        }
+        return searchedblink;
     }
 }

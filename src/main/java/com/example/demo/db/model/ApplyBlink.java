@@ -37,4 +37,5 @@ public class ApplyBlink implements Persistable {
     public boolean isNew() {
         return true;
     }
+
 }
