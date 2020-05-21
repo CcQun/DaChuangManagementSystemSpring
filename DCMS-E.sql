@@ -161,53 +161,53 @@ alter table TEAM add constraint FK_TEAM2 foreign key (Student_Number)
 /*==============================================================*/
 
 insert into STUDENT
-values (17301091, '崔超群', '男', '软件学院', DATE('2017-09-01'), '软件工程', '崔超群:软件学院的一名学生。',
-        'E10ADC3949BA59ABBE56E057F20F883E');
+values (17301091, 'CuiChaoqun', 'M', 'school of software', DATE('2017-09-01'), 'software engineering',
+    'CuiChaoqun:A student from school of software.','E10ADC3949BA59ABBE56E057F20F883E');
 
 insert into STUDENT
-values (17301097, '李程遥', '男', '软件学院', DATE('2017-09-01'), '软件工程', '李程遥:软件学院的一名学生。',
-        'E10ADC3949BA59ABBE56E057F20F883E');
+values (17301097, 'LiChengyao', 'M', 'school of software', DATE('2017-09-01'), 'software engineering',
+ 'LiChengyao:A student from school of software.','E10ADC3949BA59ABBE56E057F20F883E');
 
 insert into STUDENT
-values (17301115, '张雨梦', '女', '软件学院', DATE('2017-09-01'), '软件工程', '张雨梦:软件学院的一名学生。',
-        'E10ADC3949BA59ABBE56E057F20F883E');
+values (17301115, 'ZhangYumeng', 'F', 'school of software', DATE('2017-09-01'), 'software engineering',
+ 'ZhangYumeng:A student from school of software.','E10ADC3949BA59ABBE56E057F20F883E');
 
 insert into STUDENT
-values (17301126, '李浩冉', '男', '软件学院', DATE('2017-09-01'), '软件工程', '李浩冉:软件学院的一名学生。',
-        'E10ADC3949BA59ABBE56E057F20F883E');
+values (17301126, 'LiHaoran', 'M', 'school of software', DATE('2017-09-01'), 'software engineering',
+'LiHaoran:A student from school of software.','E10ADC3949BA59ABBE56E057F20F883E');
 
 insert into STUDENT
-values (17301113, '张影', '女', '软件学院', DATE('2017-09-01'), '软件工程', '张影:软件学院的一名学生。',
+values (17301113, 'ZhangYing', 'F', 'school of software', DATE('2017-09-01'), 'software engineering',
+'ZhangYing:A student from school of software.','E10ADC3949BA59ABBE56E057F20F883E');
+
+insert into TEACHER
+values (10000001, 'LiYu', 'M', 'school of software', 'LiYu:A teacher from school of software.',
         'E10ADC3949BA59ABBE56E057F20F883E');
 
 insert into TEACHER
-values (10000001, '李宇', '男', '软件学院', '李宇:软件学院的一位老师。',
-        'E10ADC3949BA59ABBE56E057F20F883E');
-
-insert into TEACHER
-values (10000002, '曾立刚', '男', '软件学院', '曾立刚:软件学院的一位老师。',
+values (10000002, 'ZengLigang', 'M', 'school of software', 'ZengLigang:A teacher from school of software.',
         'E10ADC3949BA59ABBE56E057F20F883E');
 
 insert into BLINK
-values (1, 17301091, '基于深度学习的列车监控系统', '使用深度学习算法进行列车的轴承故障检测和驾驶员监控',
-        '软件学院', '深度学习', 0, DATE('2019-05-21 21:12:22'));
+values (1, 17301091, 'Train monitoring system based on deep learning', 'The deep learning algorithm is used to detect the bearing fault and monitor the driver.',
+        'school of software', 'Deep learning', 0, DATE('2019-05-21 21:12:22'));
 
 insert into BLINK
-values (2, 17301097, '医疗推荐系统', '对患病人群进行实时医疗方案推荐',
-        '经管学院', '医学', 0, DATE('2020-11-20 05:30:50'));
+values (2, 17301097, 'Medical referral system', 'Real-time medical scheme recommendation for patients.',
+        'School of management', 'medical', 0, DATE('2020-11-20 05:30:50'));
 
 insert into BLINK
-values (3, 17301091, '基于Spring Boot的大创管理系统', '使用Spring Boot实现北交大创管理系统的重构',
-        '软件学院', 'JavaEE', 0, DATE('2019-08-12 08:50:15'));
+values (3, 17301091, 'Based on the Spring Boot DaChuang management system', 'Using Spring Boot to implement the reconfiguration of the management system.',
+        'school of software', 'JavaEE', 0, DATE('2019-08-12 08:50:15'));
 
 insert into BLINK
-values (4, 17301091, '使用逻辑回归进行web异常请求检测', '运用nlp与逻辑回归进行二分类',
-        '软件学院', '机器学习', 0, DATE('2020-06-02 07:31:22'));
+values (4, 17301091, 'Web exception request detection using logistic regression', 'NLP and logistic regression were used for dichotomy.',
+        'school of software', 'Machine learning', 0, DATE('2020-06-02 07:31:22'));
 
 insert into BLINK
-values (5, 17301113, '基于Spring Boot与Vue的合同管理系统', '运用Spring Boot与Vue实现合同管理的自动化',
-        '软件学院', '前端开发', 0, DATE('2018-07-12 16:37:33'));
+values (5, 17301113, 'Contract management system based on Spring Boot and Vue', 'Using Spring Boot and Vue to automate contract management.',
+        'school of software', 'The front-end development', 0, DATE('2018-07-12 16:37:33'));
 
 insert into BLINK
-values (6, 17301097, '列车故障检测', '使用多学科技术进行列车故障检测',
-        '交通运输学院', '交通运输', 0, DATE('2018-11-12 14:15:29'));
+values (6, 17301097, 'Train fault detection', 'Train fault detection using multidisciplinary techniques',
+        'School of transportation', 'The transportation', 0, DATE('2018-11-12 14:15:29'));
