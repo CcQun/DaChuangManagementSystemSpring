@@ -5,23 +5,19 @@ import com.example.demo.core.request.MyBlinkRequest;
 import com.example.demo.core.request.PublishBlinkRequest;
 import com.example.demo.core.response.BaseResponse;
 import com.example.demo.core.response.ListResponse;
+import com.example.demo.core.response.custommodel.BlinkWithSName;
 import com.example.demo.db.model.ApplyBlink;
 import com.example.demo.db.model.ApplyBlinkPK;
 import com.example.demo.db.model.Blink;
 import com.example.demo.db.model.Student;
 import com.example.demo.db.service.ApplyBlinkService;
 import com.example.demo.db.service.BlinkService;
+import com.example.demo.db.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -40,9 +36,13 @@ public class BlinkController {
     @Autowired
     private final BlinkService blinkService;
 
-    public BlinkController(ApplyBlinkService applyBlinkService, BlinkService blinkService) {
+    @Autowired
+    private final StudentService studentService;
+
+    public BlinkController(ApplyBlinkService applyBlinkService, BlinkService blinkService, StudentService studentService) {
         this.applyBlinkService = applyBlinkService;
         this.blinkService = blinkService;
+        this.studentService = studentService;
     }
 
 
@@ -91,11 +91,30 @@ public class BlinkController {
 
     //查看自己发布的blink
     @RequestMapping("/myBlink")
-    public ListResponse<Blink> myBlink(@RequestBody MyBlinkRequest request){
+    public ListResponse<BlinkWithSName> myBlink(@RequestBody MyBlinkRequest request){
         Blink blink = Blink.builder().student_number(request.getStudent_number()).build();
         List<Blink> list = blinkService.findAll(blink);
-        ListResponse<Blink> response = new ListResponse<>();
-        response.setData(list);
+        List<BlinkWithSName> res = new ArrayList<>();
+        for(int i = 0;i < list.size();i++){
+            Blink blink1 = list.get(i);
+            Student student = Student.builder().student_number(blink1.getStudent_number()).build();
+            String student_name = studentService.findAll(student).get(0).getStudent_name();
+            BlinkWithSName bwsn = BlinkWithSName.builder()
+                    .blink_number(blink1.getBlink_number())
+                    .student_number(blink1.getStudent_number())
+                    .blink_college(blink1.getBlink_college())
+                    .blink_content(blink1.getBlink_content())
+                    .blink_field(blink1.getBlink_field())
+                    .blink_state(blink1.getBlink_state())
+                    .blink_title(blink1.getBlink_title())
+                    .creat_time(blink1.getCreat_time())
+                    .student_name(student_name)
+                    .build();
+            res.add(bwsn);
+        }
+        ListResponse<BlinkWithSName> response = new ListResponse<>();
+        response.setData(res);
+        response.setCode(1);
         return response;
     }
 
