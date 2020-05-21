@@ -52,7 +52,6 @@ import java.util.Date;
 import java.util.List;
 import com.alibaba.fastjson.JSONObject;
 
-package com.example.demo.controller;
 
 import com.example.demo.core.request.ApplyBlinkRequest;
 import com.example.demo.core.request.MyBlinkRequest;
