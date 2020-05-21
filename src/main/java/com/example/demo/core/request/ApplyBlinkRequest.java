@@ -6,4 +6,5 @@ import lombok.Data;
 public class ApplyBlinkRequest {
     private Integer blink_number;
     private Integer student_number;
+    private Integer blink_approval;
 }
