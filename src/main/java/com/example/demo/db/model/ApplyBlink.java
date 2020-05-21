@@ -23,7 +23,6 @@ public class ApplyBlink implements Persistable {
     @Column(name = "Blink_Approval")
     private Integer Blink_Approval;
 
-
     public String toString(){
         return "applyblink= "+getApplyBlinkPK().toString();
     }
