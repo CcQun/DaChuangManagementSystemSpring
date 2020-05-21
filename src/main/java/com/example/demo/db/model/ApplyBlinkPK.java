@@ -1,6 +1,7 @@
 package com.example.demo.db.model;
 
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -10,6 +11,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Builder
 @Embeddable
+@Data
 public class ApplyBlinkPK implements Serializable {
 
     @Column(name="Blink_Number")
