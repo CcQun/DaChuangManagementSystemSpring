@@ -64,6 +64,7 @@ public class ApplyController {
                 ApplyStudent applyStudent=new ApplyStudent();
                 List<Student> list1 = studentService.findAllByStudentNumber(list.get(i).getApplyBlinkPK().getStudentnum());
                 applyStudent.setBlinknum(list.get(i).getApplyBlinkPK().getBlinknum());
+                applyStudent.setBlink_approval(list.get(i).getBlink_Approval());
                 applyStudent.setStudent_number(list.get(i).getApplyBlinkPK().getStudentnum());
                 applyStudent.setStudent_name(list1.get(0).getStudent_name());
                 applyStudent.setStudent_gender(list1.get(0).getStudent_gender());

@@ -19,6 +19,7 @@ import java.util.Date;
 public class ApplyStudent{
     @Id
     private Integer blinknum;
+    private Integer blink_approval;
     private Integer student_number;
     private String student_name;
     private String student_gender;
