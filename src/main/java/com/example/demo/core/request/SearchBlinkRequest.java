@@ -6,3 +6,4 @@ import lombok.Data;
 public class SearchBlinkRequest {
     private String keywords;
 }
+
