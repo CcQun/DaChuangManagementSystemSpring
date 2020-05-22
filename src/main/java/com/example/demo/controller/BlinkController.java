@@ -159,7 +159,7 @@ public class BlinkController {
                     .blink_field(blink1.getBlink_field())
                     .blink_state(blink1.getBlink_state())
                     .blink_title(blink1.getBlink_title())
-                    .creat_time(blink1.getCreat_time())
+                    .create_time(blink1.getCreat_time())
                     .student_name(student_name)
                     .build();
             res.add(bwsn);
