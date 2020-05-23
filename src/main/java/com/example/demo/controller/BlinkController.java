@@ -10,6 +10,59 @@ import com.example.demo.core.response.custommodel.BlinkWithSName;
 import com.example.demo.db.model.ApplyBlink;
 import com.example.demo.db.model.ApplyBlinkPK;
 import com.example.demo.db.model.Blink;
+import com.example.demo.db.service.ApplyBlinkService;
+import com.example.demo.db.service.BlinkService;
+import com.example.demo.db.service.StudentService;
+import org.json.JSONException;
+
+//import com.example.demo.db.service.StudentService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import com.alibaba.fastjson.JSONObject;
+
+import com.example.demo.core.request.ApplyBlinkRequest;
+import com.example.demo.core.request.MyBlinkRequest;
+import com.example.demo.core.request.PublishBlinkRequest;
+import com.example.demo.core.request.SearchBlinkRequest;
+import com.example.demo.core.response.BaseResponse;
+import com.example.demo.core.response.ListResponse;
+import com.example.demo.db.model.ApplyBlink;
+import com.example.demo.db.model.ApplyBlinkPK;
+import com.example.demo.db.model.Blink;
+import com.example.demo.db.service.ApplyBlinkService;
+import com.example.demo.db.service.BlinkService;
+import com.example.demo.db.service.StudentService;
+import org.json.JSONException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import com.alibaba.fastjson.JSONObject;
+
+
+import com.example.demo.core.request.ApplyBlinkRequest;
+import com.example.demo.core.request.MyBlinkRequest;
+import com.example.demo.core.request.PublishBlinkRequest;
+import com.example.demo.core.request.SearchBlinkRequest;
+import com.example.demo.core.response.BaseResponse;
+import com.example.demo.core.response.ListResponse;
+import com.example.demo.core.response.custommodel.BlinkWithSName;
+import com.example.demo.db.model.ApplyBlink;
+import com.example.demo.db.model.ApplyBlinkPK;
+import com.example.demo.db.model.Blink;
 import com.example.demo.db.model.Student;
 import com.example.demo.db.service.ApplyBlinkService;
 import com.example.demo.db.service.BlinkService;
@@ -21,7 +74,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 /**
  * @Author CcQun、ZyMeng、ZYing、LhRan、LcYao
  * @Date 2020/5/16 7:39
@@ -107,7 +159,7 @@ public class BlinkController {
                     .blink_field(blink1.getBlink_field())
                     .blink_state(blink1.getBlink_state())
                     .blink_title(blink1.getBlink_title())
-                    .creat_time(blink1.getCreat_time())
+                    .create_time(blink1.getCreat_time())
                     .student_name(student_name)
                     .build();
             res.add(bwsn);
@@ -124,22 +176,58 @@ public class BlinkController {
         List<Blink> blinks = blinkService.findAll();
         return blinks;
     }
-    
+
     //关键字搜索blink
+
+    @ResponseBody
     @RequestMapping("/searchblink")
-    public List<Blink> searchblink(@RequestBody SearchBlinkRequest request) {
+    public JSONObject searchblink(@RequestBody SearchBlinkRequest request) throws JSONException {
+
+        List<JSONObject> jsonlist=new ArrayList<JSONObject>();
+        JSONObject object=new JSONObject();
+
         String str = request.getKeywords();
         List<Blink> blinks = blinkService.findAll();
-        List<Blink> searchedblink = new ArrayList<Blink>();
+
+        int num=0;
         for (int i = 0; i<blinks.size(); i++){
             if(blinks.get(i).getBlink_content().indexOf(str)!= -1){
-                searchedblink.add(blinks.get(i));
+                jsonlist.add(new JSONObject());
+                jsonlist.get(num).put("blink_number",blinks.get(i).getBlink_number());
+                jsonlist.get(num).put("student_number",blinks.get(i).getStudent_number());
+                int studentnum=blinks.get(i).getStudent_number();
+                System.out.println("1"+studentnum);
+                System.out.println("2"+studentService.findAllByStudentNumber(studentnum).get(0).getStudent_name());
+                jsonlist.get(num).put("student_name",studentService.findAllByStudentNumber(studentnum).get(0).getStudent_name());
+                jsonlist.get(num).put("blink_title",blinks.get(i).getBlink_title());
+                jsonlist.get(num).put("blink_content",blinks.get(i).getBlink_content());
+                jsonlist.get(num).put("create_time",blinks.get(i).getCreat_time());
+                jsonlist.get(num).put("blink_college",blinks.get(i).getBlink_college());
+                jsonlist.get(num).put("blink_field",blinks.get(i).getBlink_field());
+                jsonlist.get(num).put("blink_state",blinks.get(i).getBlink_state());
+                num++;
             }
             else if(blinks.get(i).getBlink_title().indexOf(str)!= -1){
-                searchedblink.add(blinks.get(i));
+                jsonlist.add(new JSONObject());
+                jsonlist.get(num).put("blink_number",blinks.get(i).getBlink_number());
+                jsonlist.get(num).put("student_number",blinks.get(i).getStudent_number());
+                int studentnum=blinks.get(i).getStudent_number();
+                System.out.println("1"+studentnum);
+                System.out.println("2"+studentService.findAllByStudentNumber(studentnum).get(0).getStudent_name());
+                jsonlist.get(num).put("student_name",studentService.findAllByStudentNumber(studentnum).get(0).getStudent_name());
+                jsonlist.get(num).put("blink_title",blinks.get(i).getBlink_title());
+                jsonlist.get(num).put("blink_content",blinks.get(i).getBlink_content());
+                jsonlist.get(num).put("create_time",blinks.get(i).getCreat_time());
+                jsonlist.get(num).put("blink_college",blinks.get(i).getBlink_college());
+                jsonlist.get(num).put("blink_field",blinks.get(i).getBlink_field());
+                jsonlist.get(num).put("blink_state",blinks.get(i).getBlink_state());
+                num++;
             }
         }
-        return searchedblink;
+        object.put("code",1);
+        object.put("msg","yes");
+        object.put("data",jsonlist);
+        return object;
     }
 
     //获得最大blink number

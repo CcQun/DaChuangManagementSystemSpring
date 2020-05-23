@@ -26,7 +26,7 @@ public class BlinkWithSName {
     private String blink_content;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:SS")
-    private Date creat_time;
+    private Date create_time;
     private String blink_college;
     private String blink_field;
     private Integer blink_state;
