@@ -29,6 +29,7 @@ public class ApplyController {
     @Autowired
     private final StudentService studentService;
 
+
     public ApplyController(ApplyBlinkService applyBlinkService, StudentService studentService) {
         this.applyBlinkService = applyBlinkService;
         this.studentService = studentService;
