@@ -66,6 +66,7 @@ public class BlinkController {
         return response;
     }
 
+    //申请加入某个blink
     @RequestMapping("/applyBlink")
     public BaseResponse joinBlink(@RequestBody ApplyBlinkRequest request) {
         BaseResponse response = new BaseResponse();
