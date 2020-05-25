@@ -1,6 +1,7 @@
 package com.example.demo.db.service;
 
 import com.example.demo.db.mapper.ApplyBlinkMapper;
+import com.example.demo.db.mapper.BlinkMapper;
 import com.example.demo.db.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -11,9 +12,13 @@ import java.util.List;
 @Service
 public class ApplyBlinkService extends BaseService<ApplyBlink,ApplyBlinkPK, ApplyBlinkMapper>{
 
-    @Autowired
-    private ApplyBlinkMapper applyBlinkMapper;
+    private final ApplyBlinkMapper applyBlinkMapper;
 
+    public ApplyBlinkService(ApplyBlinkMapper applyBlinkMapper) {
+
+        this.applyBlinkMapper=applyBlinkMapper;
+    }
+//申请加入blink
     public boolean insert(ApplyBlink applyBlink){
         try{
             mapper.save(applyBlink);

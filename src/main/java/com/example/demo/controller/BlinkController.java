@@ -1,9 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.core.request.ApplyBlinkRequest;
-import com.example.demo.core.request.MyBlinkRequest;
-import com.example.demo.core.request.PublishBlinkRequest;
-import com.example.demo.core.request.SearchBlinkRequest;
+import com.example.demo.core.request.*;
 import com.example.demo.core.response.BaseResponse;
 import com.example.demo.core.response.ListResponse;
 import com.example.demo.core.response.custommodel.BlinkWithSName;
@@ -241,5 +238,20 @@ public class BlinkController {
             }
         }
         return maxBlinkNumber;
+    }
+
+    //删除blink
+    @RequestMapping("/deleteblink")
+    public BaseResponse deleteblink(@RequestBody DeleteBlinkRequest request){
+        BaseResponse response = new BaseResponse();
+        Integer blink_num=request.getBlink_number();
+        if (blinkService.delete(blink_num)) {
+            response.setCode(1);
+            response.setMsg("Success!");
+        } else {
+            response.setCode(0);
+            response.setMsg("False");
+        }
+        return response;
     }
 }
