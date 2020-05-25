@@ -19,7 +19,7 @@ public class ApplyBlinkService extends BaseService<ApplyBlink,ApplyBlinkPK, Appl
             mapper.save(applyBlink);
             return true;
         }catch (Exception e){
-            e.printStackTrace();
+            System.out.println("主键冲突");
             return false;
         }
     }
