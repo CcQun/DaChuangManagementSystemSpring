@@ -45,5 +45,47 @@ public class ProjectService extends BaseService<Project,Integer, ProjectMapper> 
         return list;
     }
 
+    public boolean changeState(Project project,int projectapproval,int oldapproval) {
+        int state = project.getProject_State();
+        if (projectapproval == 2) {
+            if (oldapproval == 1) {
+                project.setProject_State(state - 1);
+                try {
+                    mapper.save(project);
+                    return true;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return false;
+                }
+            } else {
+                return true;
+            }
+        } else {
+            if (oldapproval == 1) {
+                return true;
+            } else {
+                if (state == 3) {
+                    return false;
+                } else {
+                    project.setProject_State(state + 1);
+                    try {
+                        mapper.save(project);
+                        return true;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return false;
+                    }
+                }
+            }
+
+        }
+    }
+
+    public List<Project> findAllByBlinkNumber(int projectNumber){
+        Project project=Project.builder().project_number(projectNumber).build();
+        Example<Project> example = Example.of(project);
+        List<Project> list = mapper.findAll(example);
+        return list;
+    }
 
 }

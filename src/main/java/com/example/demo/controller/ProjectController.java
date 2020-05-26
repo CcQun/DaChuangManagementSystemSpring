@@ -44,7 +44,7 @@ public class ProjectController {
         this.studentService = studentService;
     }
 
-    //申请加入某个blink
+    //申请加入某个project
     @RequestMapping("/applyProject")
     public BaseResponse joinBlink(@RequestBody ApplyProjectRequest request) {
         BaseResponse response = new BaseResponse();
@@ -212,16 +212,27 @@ public class ProjectController {
         }
 
         ApplyProject applyProject1= list.get(0);
-        boolean back=applyProjectService.findAllByProjectStudent(applyProject1,project_approval);
-        if(back){
-            response.setCode(1);
-            response.setMsg("已改");
+        int projectnum=applyProject1.getApplyProjectPK().getProjectnum();
+        int oldapproval=applyProject1.getProject_Approval();
+        List<Project> list1=projectService.findAllByBlinkNumber(projectnum);
+        Project project=list1.get(0);
+        boolean back1=projectService.changeState(project,project_approval,oldapproval);
+        if(!back1){
+            response.setCode(0);
+            response.setMsg("已满员");
+            return response;
         }
         else {
-            response.setCode(0);
-            response.setMsg("失败");
+            boolean back=applyProjectService.findAllByProjectStudent(applyProject1,project_approval);
+            if(back){
+                response.setCode(1);
+                response.setMsg("已改");
+            }
+            else {
+                response.setCode(0);
+                response.setMsg("失败");
+            }
+            return response;
         }
-        return response;
     }
-
 }
