@@ -136,6 +136,7 @@ public class ApplyController {
         }
         return response;
     }
+    //查看自己申请blink的通过情况
     @ResponseBody
     @RequestMapping("/getApprove")
     public JSONObject getApprove(@RequestBody ApplyBlinkRequest request) {

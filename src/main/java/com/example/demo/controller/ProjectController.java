@@ -3,14 +3,10 @@ package com.example.demo.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.example.demo.core.request.ApplyBlinkRequest;
 import com.example.demo.core.request.ApplyProjectRequest;
-import com.example.demo.core.request.DeleteBlinkRequest;
 import com.example.demo.core.request.DeleteProjectRequest;
 import com.example.demo.core.response.BaseResponse;
 import com.example.demo.core.response.ListResponse;
-import com.example.demo.db.model.ApplyBlink;
-import com.example.demo.db.model.ApplyProject;
-import com.example.demo.db.model.ApplyProjectPK;
-import com.example.demo.db.model.Project;
+import com.example.demo.db.model.*;
 import com.example.demo.db.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -35,11 +31,17 @@ import java.util.List;
 public class ProjectController {
     @Autowired
     private final ApplyProjectService applyProjectService;
+
     @Autowired
     private final ProjectService projectService;
-    public ProjectController(ApplyProjectService applyProjectService,ProjectService projectService) {
+
+    @Autowired
+    private final StudentService studentService;
+
+    public ProjectController(ApplyProjectService applyProjectService, ProjectService projectService, StudentService studentService) {
         this.applyProjectService = applyProjectService;
         this.projectService=projectService;
+        this.studentService = studentService;
     }
 
     //申请加入某个blink
@@ -81,6 +83,7 @@ public class ProjectController {
         return response;
     }
 
+    //查看自己申请项目的通过情况
     @ResponseBody
     @RequestMapping("/getProjectApprove")
     public JSONObject getApprove(@RequestBody ApplyProjectRequest request) {
@@ -121,4 +124,50 @@ public class ProjectController {
             return object;
         }
     }
+
+    //查询自己发布的project申请情况
+    @RequestMapping("/selectProjectApply")
+    public ListResponse<ApplyProject> selectApply(@RequestBody ApplyProjectRequest request) {
+        Integer project_number=request.getProject_number();
+        ListResponse<ApplyProject> response=new ListResponse<>();
+
+        Specification<ApplyProject> specification=new Specification<ApplyProject>() {
+            @Override
+            public Predicate toPredicate(Root<ApplyProject> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                List<Predicate> predicateList=new ArrayList<>();
+                Predicate shPredicate=criteriaBuilder.equal(root.get("applyProjectPK").get("projectnum"),project_number);
+                predicateList.add(shPredicate);
+                Predicate[] predicates=new Predicate[predicateList.size()];
+                return criteriaBuilder.and(predicateList.toArray(predicates));
+            }
+        };
+
+        List<ApplyProject> list = applyProjectService.findAll(specification);
+        List list2 = new ArrayList();
+        if(list.size()==0){
+            response.setMsg("No apply");
+        }
+        else {
+            response.setCode(1);
+            response.setMsg("Have apply");
+            for(int i=0;i<list.size();i++){
+                ApplyProjectStudent applyProjectStudent=new ApplyProjectStudent();
+                List<Student> list1 = studentService.findAllByStudentNumber(list.get(i).getApplyProjectPK().getStudentnum());
+                applyProjectStudent.setProjectnum(list.get(i).getApplyProjectPK().getProjectnum());
+                applyProjectStudent.setProject_approval(list.get(i).getProject_Approval());
+                applyProjectStudent.setStudent_number(list.get(i).getApplyProjectPK().getStudentnum());
+                applyProjectStudent.setStudent_name(list1.get(0).getStudent_name());
+                applyProjectStudent.setStudent_gender(list1.get(0).getStudent_gender());
+                applyProjectStudent.setStudent_college(list1.get(0).getStudent_college());
+                applyProjectStudent.setMajor(list1.get(0).getMajor());
+                applyProjectStudent.setStudent_introduction(list1.get(0).getStudent_introduction());
+                applyProjectStudent.setDate(list1.get(0).getDate());
+                list2.add(applyProjectStudent);
+            }
+            response.setData(list2);
+        }
+        return response;
+    }
+
+   
 }
