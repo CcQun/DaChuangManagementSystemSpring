@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 public class LoginRequest {
-    private Integer student_number;
-    private String student_password;
+    private Integer ts;
+    private Integer number;
+    private String password;
 }
