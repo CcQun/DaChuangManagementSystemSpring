@@ -176,7 +176,6 @@ public class BlinkController {
     }
 
     //关键字搜索blink
-
     @ResponseBody
     @RequestMapping("/searchblink")
     public JSONObject searchblink(@RequestBody SearchBlinkRequest request) throws JSONException {
