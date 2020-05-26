@@ -2,21 +2,12 @@ package com.example.demo.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.demo.core.request.ApplyBlinkRequest;
-import com.alibaba.fastjson.JSONObject;
 import com.example.demo.core.request.ApplyProjectRequest;
 import com.example.demo.core.request.DeleteProjectRequest;
-import com.example.demo.core.request.SearchBlinkRequest;
-import com.example.demo.core.request.*;
 import com.example.demo.core.response.BaseResponse;
 import com.example.demo.core.response.ListResponse;
 import com.example.demo.db.model.*;
-import com.example.demo.db.model.*;
-import com.example.demo.db.model.ApplyProject;
-import com.example.demo.db.model.ApplyProjectPK;
-import com.example.demo.db.model.Blink;
-import com.example.demo.db.model.Project;
 import com.example.demo.db.service.*;
-import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,12 +22,6 @@ import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 
-import java.util.Date;
-import java.util.List;
-
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @Author CcQun、ZyMeng、ZYing、LhRan、LcYao
  * @Date 2020/5/16 7:40
@@ -48,44 +33,15 @@ public class ProjectController {
     private final ApplyProjectService applyProjectService;
 
     @Autowired
-    private final StudentService studentService;
-    @Autowired
-    private final TeacherService teacherService;
-    @Autowired
     private final ProjectService projectService;
 
     @Autowired
     private final StudentService studentService;
 
     public ProjectController(ApplyProjectService applyProjectService, ProjectService projectService, StudentService studentService) {
-    public ProjectController(ApplyProjectService applyProjectService,ProjectService projectService,TeacherService teacherService,StudentService studentService) {
         this.applyProjectService = applyProjectService;
         this.projectService=projectService;
         this.studentService = studentService;
-        this.studentService=studentService;
-        this.teacherService=teacherService;
-
-    }
-
-    //发布blink
-    @RequestMapping("/publishProject")
-    public BaseResponse publishProject(@RequestBody PublishProjectRequest request) {
-
-        Project project = Project.builder()
-                .project_number(getMaxProjectNumber() + 1)
-                .Create_Teacher_Number(request.getCreate_teacher_number())
-                .Direct_Teacher_Number(request.getCreate_teacher_number())
-                .Project_Name(request.getProject_name())
-                .Project_Description(request.getProject_description())
-                .Project_College(request.getProject_college())
-                .Project_Field(request.getProject_field())
-                .creat_time(new Date())
-                .Project_State(new Integer(0))
-                .build();
-        projectService.getMapper().save(project);
-        BaseResponse response = new BaseResponse();
-        response.setCode(1);
-        return response;
     }
 
     //申请加入某个project
@@ -278,113 +234,5 @@ public class ProjectController {
             }
             return response;
         }
-    }
-
-    //关键字搜索project
-    @ResponseBody
-    @RequestMapping("/searchproject")
-    public JSONObject searchproject(@RequestBody SearchBlinkRequest request) throws JSONException {
-
-        List<JSONObject> jsonlist=new ArrayList<JSONObject>();
-        JSONObject object=new JSONObject();
-
-        String str = request.getKeywords();
-        List<Project> projects = projectService.findAll();
-
-        int num=0;
-        for (int i = 0; i<projects.size(); i++){
-            if(projects.get(i).getProject_Description().indexOf(str)!= -1){
-                jsonlist.add(new JSONObject());
-                jsonlist.get(num).put("project_number",projects.get(i).getProject_number());
-                jsonlist.get(num).put("create_teacher_number",projects.get(i).getCreate_Teacher_Number());
-                jsonlist.get(num).put("student_number",projects.get(i).getCreate_Student_Number());
-                jsonlist.get(num).put("direct_teacher_number",projects.get(i).getDirect_Teacher_Number());
-                int studentnum=projects.get(i).getCreate_Student_Number();
-                int create_teacher_number=projects.get(i).getCreate_Teacher_Number();
-                int direct_teacher_number=projects.get(i).getDirect_Teacher_Number();
-                jsonlist.get(num).put("student_name",studentService.findAllByStudentNumber(studentnum).get(0).getStudent_name());
-                jsonlist.get(num).put("create_teacher_name",teacherService.findAllByTeacherNumber(create_teacher_number).get(0).getTeacher_name());
-                jsonlist.get(num).put("direct_teacher_name",teacherService.findAllByTeacherNumber(direct_teacher_number).get(0).getTeacher_name());
-                jsonlist.get(num).put("project_Name",projects.get(i).getProject_Name());
-                jsonlist.get(num).put("project_Description",projects.get(i).getProject_Description());
-                jsonlist.get(num).put("project_College",projects.get(i).getProject_College());
-                jsonlist.get(num).put("project_Field",projects.get(i).getProject_Field());
-                jsonlist.get(num).put("project_State",projects.get(i).getProject_State());
-                jsonlist.get(num).put("creat_time",projects.get(i).getCreat_time());
-                num++;
-            }
-            else if(projects.get(i).getProject_Name().indexOf(str)!= -1){
-                jsonlist.add(new JSONObject());
-                jsonlist.get(num).put("project_number",projects.get(i).getProject_number());
-                jsonlist.get(num).put("create_teacher_number",projects.get(i).getCreate_Teacher_Number());
-                jsonlist.get(num).put("student_number",projects.get(i).getCreate_Student_Number());
-                jsonlist.get(num).put("direct_teacher_number",projects.get(i).getDirect_Teacher_Number());
-                int studentnum=projects.get(i).getCreate_Student_Number();
-                int create_teacher_number=projects.get(i).getCreate_Teacher_Number();
-                int direct_teacher_number=projects.get(i).getDirect_Teacher_Number();
-                jsonlist.get(num).put("student_name",studentService.findAllByStudentNumber(studentnum).get(0).getStudent_name());
-                jsonlist.get(num).put("create_teacher_name",teacherService.findAllByTeacherNumber(create_teacher_number).get(0).getTeacher_name());
-                jsonlist.get(num).put("direct_teacher_name",teacherService.findAllByTeacherNumber(direct_teacher_number).get(0).getTeacher_name());
-                jsonlist.get(num).put("project_Name",projects.get(i).getProject_Name());
-                jsonlist.get(num).put("project_Description",projects.get(i).getProject_Description());
-                jsonlist.get(num).put("project_College",projects.get(i).getProject_College());
-                jsonlist.get(num).put("project_Field",projects.get(i).getProject_Field());
-                jsonlist.get(num).put("project_State",projects.get(i).getProject_State());
-                jsonlist.get(num).put("creat_time",projects.get(i).getCreat_time());
-                num++;
-            }
-        }
-        object.put("code",1);
-        object.put("msg","yes");
-        object.put("data",jsonlist);
-        return object;
-    }
-
-    //查询project
-    @ResponseBody
-    @RequestMapping("/queryproject")
-    public JSONObject searchproject() throws JSONException {
-
-        List<JSONObject> jsonlist=new ArrayList<JSONObject>();
-        JSONObject object=new JSONObject();
-        List<Project> projects = projectService.findAll();
-        int num=0;
-        for (int i = 0; i<projects.size(); i++){
-            jsonlist.add(new JSONObject());
-            jsonlist.get(num).put("project_number",projects.get(i).getProject_number());
-            jsonlist.get(num).put("create_teacher_number",projects.get(i).getCreate_Teacher_Number());
-            jsonlist.get(num).put("student_number",projects.get(i).getCreate_Student_Number());
-            jsonlist.get(num).put("direct_teacher_number",projects.get(i).getDirect_Teacher_Number());
-            int studentnum=projects.get(i).getCreate_Student_Number();
-            int create_teacher_number=projects.get(i).getCreate_Teacher_Number();
-            int direct_teacher_number=projects.get(i).getDirect_Teacher_Number();
-            jsonlist.get(num).put("student_name",studentService.findAllByStudentNumber(studentnum).get(0).getStudent_name());
-            jsonlist.get(num).put("create_teacher_name",teacherService.findAllByTeacherNumber(create_teacher_number).get(0).getTeacher_name());
-            jsonlist.get(num).put("direct_teacher_name",teacherService.findAllByTeacherNumber(direct_teacher_number).get(0).getTeacher_name());
-            jsonlist.get(num).put("project_Name",projects.get(i).getProject_Name());
-            jsonlist.get(num).put("project_Description",projects.get(i).getProject_Description());
-            jsonlist.get(num).put("project_College",projects.get(i).getProject_College());
-            jsonlist.get(num).put("project_Field",projects.get(i).getProject_Field());
-            jsonlist.get(num).put("project_State",projects.get(i).getProject_State());
-            jsonlist.get(num).put("creat_time",projects.get(i).getCreat_time());
-            num++;
-        }
-        object.put("code",1);
-        object.put("msg","yes");
-        object.put("data",jsonlist);
-        return object;
-    }
-
-
-    //获得最大blink number
-    public Integer getMaxProjectNumber() {
-        List<Project> projects = projectService.findAll();
-        Integer maxProjectNumber = 0;
-        for (int i = 0; i < projects.size(); i++) {
-            if (projects.get(i).getProject_number() > maxProjectNumber) {
-                maxProjectNumber = projects.get(i).getProject_number();
-            }
-        }
-        return maxProjectNumber;
     }
 }
