@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.example.demo.core.request.ApplyBlinkRequest;
 import com.example.demo.core.request.StudentRequest;
 import com.example.demo.core.response.BaseResponse;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -133,5 +135,46 @@ public class ApplyController {
             response.setMsg("失败");
         }
         return response;
+    }
+    @ResponseBody
+    @RequestMapping("/getApprove")
+    public JSONObject getApprove(@RequestBody ApplyBlinkRequest request) {
+        Integer student_number=request.getStudent_number();
+        ListResponse<ApplyBlink> response=new ListResponse<>();
+
+        Specification<ApplyBlink> specification=new Specification<ApplyBlink>() {
+            @Override
+            public Predicate toPredicate(Root<ApplyBlink> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                List<Predicate> predicateList=new ArrayList<>();
+                Predicate shPredicate=criteriaBuilder.equal(root.get("applyBlinkPK").get("studentnum"),student_number);
+                predicateList.add(shPredicate);
+                Predicate[] predicates=new Predicate[predicateList.size()];
+                return criteriaBuilder.and(predicateList.toArray(predicates));
+            }
+        };
+
+        List<ApplyBlink> list = applyBlinkService.findAll(specification);
+
+        List<JSONObject> jsonlist=new ArrayList<JSONObject>();
+        JSONObject object=new JSONObject();
+
+        if(list.size()==0){
+            object.put("code",0);
+            object.put("msg","no apply");
+            return object;
+        }
+        else {
+            int num=0;
+            for (int i = 0; i<list.size(); i++){
+                jsonlist.add(new JSONObject());
+                jsonlist.get(num).put("blink_number",list.get(i).getApplyBlinkPK().getBlinknum());
+                jsonlist.get(num).put("blink_approval",list.get(i).getBlink_Approval());
+                num++;
+            }
+            object.put("code",1);
+            object.put("msg","yes");
+            object.put("data",jsonlist);
+            return object;
+        }
     }
 }

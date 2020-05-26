@@ -3,6 +3,7 @@ package com.example.demo.db.service;
 import com.example.demo.db.mapper.ApplyBlinkMapper;
 import com.example.demo.db.mapper.BlinkMapper;
 import com.example.demo.db.mapper.StudentMapper;
+import com.example.demo.db.model.ApplyBlink;
 import com.example.demo.db.model.ApplyBlinkPK;
 import com.example.demo.db.model.Blink;
 import com.example.demo.db.model.Student;
@@ -39,4 +40,13 @@ public class BlinkService extends BaseService<Blink,Integer, BlinkMapper>{
             return false;
         }
     }
+
+    /*public List<ApplyBlink> findAllByStudentNumber(int studentNumber){
+
+        ApplyBlinkPK applyBlinkPK=ApplyBlinkPK.builder().studentnum(studentNumber).build();
+        ApplyBlink applyBlink=ApplyBlink.builder().applyBlinkPK(applyBlinkPK).build();
+        Example<ApplyBlink> example=Example.of(applyBlink);
+        List<ApplyBlink> list1=mapper.findAll(example);
+        return list1;
+    }*/
 }

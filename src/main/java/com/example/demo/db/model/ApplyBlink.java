@@ -14,7 +14,6 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-
 @Table(name="APPLY_BLINK")
 public class ApplyBlink implements Persistable {
     @EmbeddedId
