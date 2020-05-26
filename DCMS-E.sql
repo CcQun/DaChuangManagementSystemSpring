@@ -211,3 +211,12 @@ values (5, 17301113, 'Contract management system based on Spring Boot and Vue', 
 insert into BLINK
 values (6, 17301097, 'Train fault detection', 'Train fault detection using multidisciplinary techniques',
         'School of transportation', 'The transportation', 0, DATE('2018-11-12 14:15:29'));
+
+insert into PROJECT
+values (1,10000001,10000001,null,'Design and implementation of seckilling system','Develop and design using the latest technology','Software college','System development',0,DATE('2018-12-22 15:15:19'));
+
+insert into PROJECT
+values (2,10000001,10000001,null,'Unity based bejeweled game development','Develop bejeweled game using Unity','Software college','Game development',0,DATE('2020-05-12 19:25:31'));
+
+insert into PROJECT
+values (3,10000001,10000001,null,'Development of Wolf DLC based on unreal 5 engine','Use unreal 5 engine to develop Wolf''s new DLC','Software college','Game development',0,DATE('2019-06-18 15:35:31'));
