@@ -182,8 +182,16 @@ public class ApplyController {
             int num=0;
             for (int i = 0; i<list.size(); i++){
                 jsonlist.add(new JSONObject());
+                int blink_num=list.get(i).getApplyBlinkPK().getBlinknum();
+                List<Blink> blink=blinkService.findAllByBlinkNumber(blink_num);
                 jsonlist.get(num).put("blink_number",list.get(i).getApplyBlinkPK().getBlinknum());
                 jsonlist.get(num).put("blink_approval",list.get(i).getBlink_Approval());
+                jsonlist.get(num).put("blink_content",blink.get(0).getBlink_content());
+                jsonlist.get(num).put("blink_state",blink.get(0).getBlink_state());
+                jsonlist.get(num).put("blink_title",blink.get(0).getBlink_title());
+                jsonlist.get(num).put("blink_college",blink.get(0).getBlink_college());
+                jsonlist.get(num).put("blink_field",blink.get(0).getBlink_field());
+                jsonlist.get(num).put("blink_create_time",blink.get(0).getCreat_time());
                 num++;
             }
             object.put("code",1);
