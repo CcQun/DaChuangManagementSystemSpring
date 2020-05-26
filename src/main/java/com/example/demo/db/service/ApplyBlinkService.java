@@ -16,4 +16,24 @@ public class ApplyBlinkService extends BaseService<ApplyBlink,ApplyBlinkPK, Appl
             return false;
         }
     }
+
+    public boolean findAllByBlinkStudent(ApplyBlink applyBlink,int approval){
+
+        applyBlink.setBlink_Approval(approval);
+
+        try{
+
+            mapper.save(applyBlink);
+
+            return true;
+
+        }catch (Exception e){
+
+            e.printStackTrace();
+
+            return false;
+
+        }
+
+    }
 }
