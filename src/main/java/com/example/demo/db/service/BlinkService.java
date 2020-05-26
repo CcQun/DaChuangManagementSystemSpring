@@ -3,6 +3,7 @@ package com.example.demo.db.service;
 import com.example.demo.db.mapper.ApplyBlinkMapper;
 import com.example.demo.db.mapper.BlinkMapper;
 import com.example.demo.db.mapper.StudentMapper;
+import com.example.demo.db.model.ApplyBlink;
 import com.example.demo.db.model.ApplyBlinkPK;
 import com.example.demo.db.model.Blink;
 import com.example.demo.db.model.Student;
@@ -38,5 +39,52 @@ public class BlinkService extends BaseService<Blink,Integer, BlinkMapper>{
             System.out.println("不存在该Blink");
             return false;
         }
+    }
+
+    public boolean changeState(Blink blink,int blinkapproval,int oldapproval){
+        int state=blink.getBlink_state();
+        if(blinkapproval==2){
+            if(oldapproval==1){
+                blink.setBlink_state(state-1);
+                try{
+                    mapper.save(blink);
+                    return true;
+                }catch (Exception e){
+                    e.printStackTrace();
+                    return false;
+                }
+            }
+            else {
+                return true;
+            }
+        }
+        else {
+            if(oldapproval==1){
+                return true;
+            }
+            else{
+                if(state==3){
+                    return false;
+                }
+                else {
+                    blink.setBlink_state(state+1);
+                    try{
+                        mapper.save(blink);
+                        return true;
+                    }catch (Exception e){
+                        e.printStackTrace();
+                        return false;
+                    }
+                }
+            }
+
+        }
+
+    }
+    public List<Blink> findAllByBlinkNumber(int blinkNumber){
+        Blink blink=Blink.builder().blink_number(blinkNumber).build();
+        Example<Blink> example = Example.of(blink);
+        List<Blink> list = mapper.findAll(example);
+        return list;
     }
 }

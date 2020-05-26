@@ -29,4 +29,14 @@ public class ApplyProjectService extends BaseService<ApplyProject,ApplyProjectPK
         }
     }
 
+    public boolean findAllByProjectStudent(ApplyProject applyProject,int approval){
+        applyProject.setProject_Approval(approval);
+        try{
+            mapper.save(applyProject);
+            return true;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

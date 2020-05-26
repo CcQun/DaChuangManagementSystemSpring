@@ -1,18 +1,19 @@
 package com.example.demo.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.example.demo.core.request.ApplyBlinkRequest;
 import com.example.demo.core.request.StudentRequest;
 import com.example.demo.core.response.BaseResponse;
 import com.example.demo.core.response.ListResponse;
-import com.example.demo.db.mapper.ApplyBlinkMapper;
 import com.example.demo.db.model.*;
 import com.example.demo.db.service.ApplyBlinkService;
-import com.example.demo.db.service.BaseService;
+import com.example.demo.db.service.BlinkService;
 import com.example.demo.db.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -28,11 +29,13 @@ public class ApplyController {
     private final ApplyBlinkService applyBlinkService;
     @Autowired
     private final StudentService studentService;
+    @Autowired
+    private final BlinkService blinkService;
 
-
-    public ApplyController(ApplyBlinkService applyBlinkService, StudentService studentService) {
+    public ApplyController(ApplyBlinkService applyBlinkService, StudentService studentService, BlinkService blinkService) {
         this.applyBlinkService = applyBlinkService;
         this.studentService = studentService;
+        this.blinkService = blinkService;
     }
 
     //查询blink申请情况
@@ -123,15 +126,78 @@ public class ApplyController {
         }
 
         ApplyBlink applyBlink1= list.get(0);
-        boolean back=applyBlinkService.findAllByBlinkStudent(applyBlink1,blink_approval);
-        if(back){
-            response.setCode(1);
-            response.setMsg("已改");
+        int blinknum=applyBlink1.getApplyBlinkPK().getBlinknum();
+        int oldapproval=applyBlink1.getBlink_Approval();
+        List<Blink> list1=blinkService.findAllByBlinkNumber(blinknum);
+        Blink blink=list1.get(0);
+        boolean back1=blinkService.changeState(blink,blink_approval,oldapproval);
+        //boolean back1=blinkService.findAllByBlinkNumber(blinknum,blink_approval);
+        if(!back1){
+            response.setCode(0);
+            response.setMsg("已满员");
+            return response;
+        }
+        else{
+            boolean back=applyBlinkService.findAllByBlinkStudent(applyBlink1,blink_approval);
+            if(back){
+                response.setCode(1);
+                response.setMsg("已改");
+            }
+            else {
+                response.setCode(0);
+                response.setMsg("失败");
+            }
+            return response;
+        }
+    }
+    //查看自己申请blink的通过情况
+    @ResponseBody
+    @RequestMapping("/getApprove")
+    public JSONObject getApprove(@RequestBody ApplyBlinkRequest request) {
+        Integer student_number=request.getStudent_number();
+        ListResponse<ApplyBlink> response=new ListResponse<>();
+
+        Specification<ApplyBlink> specification=new Specification<ApplyBlink>() {
+            @Override
+            public Predicate toPredicate(Root<ApplyBlink> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                List<Predicate> predicateList=new ArrayList<>();
+                Predicate shPredicate=criteriaBuilder.equal(root.get("applyBlinkPK").get("studentnum"),student_number);
+                predicateList.add(shPredicate);
+                Predicate[] predicates=new Predicate[predicateList.size()];
+                return criteriaBuilder.and(predicateList.toArray(predicates));
+            }
+        };
+
+        List<ApplyBlink> list = applyBlinkService.findAll(specification);
+
+        List<JSONObject> jsonlist=new ArrayList<JSONObject>();
+        JSONObject object=new JSONObject();
+
+        if(list.size()==0){
+            object.put("code",0);
+            object.put("msg","no apply");
+            return object;
         }
         else {
-            response.setCode(0);
-            response.setMsg("失败");
+            int num=0;
+            for (int i = 0; i<list.size(); i++){
+                jsonlist.add(new JSONObject());
+                int blink_num=list.get(i).getApplyBlinkPK().getBlinknum();
+                List<Blink> blink=blinkService.findAllByBlinkNumber(blink_num);
+                jsonlist.get(num).put("blink_number",list.get(i).getApplyBlinkPK().getBlinknum());
+                jsonlist.get(num).put("blink_approval",list.get(i).getBlink_Approval());
+                jsonlist.get(num).put("blink_content",blink.get(0).getBlink_content());
+                jsonlist.get(num).put("blink_state",blink.get(0).getBlink_state());
+                jsonlist.get(num).put("blink_title",blink.get(0).getBlink_title());
+                jsonlist.get(num).put("blink_college",blink.get(0).getBlink_college());
+                jsonlist.get(num).put("blink_field",blink.get(0).getBlink_field());
+                jsonlist.get(num).put("blink_create_time",blink.get(0).getCreat_time());
+                num++;
+            }
+            object.put("code",1);
+            object.put("msg","yes");
+            object.put("data",jsonlist);
+            return object;
         }
-        return response;
     }
 }
