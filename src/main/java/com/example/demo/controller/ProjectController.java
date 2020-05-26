@@ -46,7 +46,7 @@ public class ProjectController {
         this.studentService = studentService;
     }
 
-    //发布blink
+    //发布project
     @RequestMapping("/publishProject")
     public BaseResponse publishProject(@RequestBody PublishProjectRequest request) {
 
@@ -58,7 +58,7 @@ public class ProjectController {
                 .Project_Description(request.getProject_description())
                 .Project_College(request.getProject_college())
                 .Project_Field(request.getProject_field())
-                .creat_time(new Date())
+                .create_time(new Date())
                 .Project_State(new Integer(0))
                 .build();
         projectService.getMapper().save(project);
@@ -145,7 +145,7 @@ public class ProjectController {
                 //String teacherName=list2.get(0).getCreate_Teacher_Number();
                 jsonlist.get(num).put("project_name",list2.get(0).getProject_Name());
                 jsonlist.get(num).put("create_teacher",list2.get(0).getCreate_Teacher_Number());
-                jsonlist.get(num).put("create_time",list2.get(0).getCreat_time());
+                jsonlist.get(num).put("create_time",list2.get(0).getCreate_time());
                 jsonlist.get(num).put("project_college",list2.get(0).getProject_College());
                 jsonlist.get(num).put("project_field",list2.get(0).getProject_Field());
                 jsonlist.get(num).put("project_description",list2.get(0).getProject_Description());
