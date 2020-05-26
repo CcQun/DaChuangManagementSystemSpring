@@ -228,17 +228,6 @@ public class BlinkController {
         return object;
     }
 
-    //获得最大blink number
-    public Integer getMaxBlinkNumber() {
-        List<Blink> blinks = blinkService.findAll();
-        Integer maxBlinkNumber = 0;
-        for (int i = 0; i < blinks.size(); i++) {
-            if (blinks.get(i).getBlink_number() > maxBlinkNumber) {
-                maxBlinkNumber = blinks.get(i).getBlink_number();
-            }
-        }
-        return maxBlinkNumber;
-    }
 
     //删除blink
     @RequestMapping("/deleteblink")
@@ -253,5 +242,17 @@ public class BlinkController {
             response.setMsg("False");
         }
         return response;
+    }
+
+    //获得最大blink number
+    public Integer getMaxBlinkNumber() {
+        List<Blink> blinks = blinkService.findAll();
+        Integer maxBlinkNumber = 0;
+        for (int i = 0; i < blinks.size(); i++) {
+            if (blinks.get(i).getBlink_number() > maxBlinkNumber) {
+                maxBlinkNumber = blinks.get(i).getBlink_number();
+            }
+        }
+        return maxBlinkNumber;
     }
 }

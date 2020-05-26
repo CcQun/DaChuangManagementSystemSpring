@@ -5,8 +5,13 @@ import com.example.demo.core.request.ApplyProjectRequest;
 import com.example.demo.core.request.DeleteBlinkRequest;
 import com.example.demo.core.request.DeleteProjectRequest;
 import com.example.demo.core.request.SearchBlinkRequest;
+import com.example.demo.core.request.*;
 import com.example.demo.core.response.BaseResponse;
 import com.example.demo.db.model.*;
+import com.example.demo.db.model.ApplyProject;
+import com.example.demo.db.model.ApplyProjectPK;
+import com.example.demo.db.model.Blink;
+import com.example.demo.db.model.Project;
 import com.example.demo.db.service.*;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +19,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Date;
+import java.util.List;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +47,27 @@ public class ProjectController {
         this.studentService=studentService;
         this.teacherService=teacherService;
 
+    }
+
+    //发布blink
+    @RequestMapping("/publishProject")
+    public BaseResponse publishProject(@RequestBody PublishProjectRequest request) {
+
+        Project project = Project.builder()
+                .project_number(getMaxProjectNumber() + 1)
+                .Create_Teacher_Number(request.getCreate_teacher_number())
+                .Direct_Teacher_Number(request.getCreate_teacher_number())
+                .Project_Name(request.getProject_name())
+                .Project_Description(request.getProject_description())
+                .Project_College(request.getProject_college())
+                .Project_Field(request.getProject_field())
+                .creat_time(new Date())
+                .Project_State(new Integer(0))
+                .build();
+        projectService.getMapper().save(project);
+        BaseResponse response = new BaseResponse();
+        response.setCode(1);
+        return response;
     }
 
     //申请加入某个blink
@@ -139,6 +168,7 @@ public class ProjectController {
         object.put("data",jsonlist);
         return object;
     }
+
     //查询project
     @ResponseBody
     @RequestMapping("/queryproject")
@@ -172,5 +202,18 @@ public class ProjectController {
         object.put("msg","yes");
         object.put("data",jsonlist);
         return object;
+    }
+
+
+    //获得最大blink number
+    public Integer getMaxProjectNumber() {
+        List<Project> projects = projectService.findAll();
+        Integer maxProjectNumber = 0;
+        for (int i = 0; i < projects.size(); i++) {
+            if (projects.get(i).getProject_number() > maxProjectNumber) {
+                maxProjectNumber = projects.get(i).getProject_number();
+            }
+        }
+        return maxProjectNumber;
     }
 }
