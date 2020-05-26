@@ -116,6 +116,17 @@ public class ProjectController {
                 jsonlist.add(new JSONObject());
                 jsonlist.get(num).put("project_number",list.get(i).getApplyProjectPK().getProjectnum());
                 jsonlist.get(num).put("project_approval",list.get(i).getProject_Approval());
+                int projectNum=list.get(i).getApplyProjectPK().getProjectnum();
+                List<Project> list2=projectService.findAllByProjectNumber(projectNum);
+                //int teacher_Num=list2.get(0).getCreate_Teacher_Number();
+                //String teacherName=list2.get(0).getCreate_Teacher_Number();
+                jsonlist.get(num).put("project_name",list2.get(0).getProject_Name());
+                jsonlist.get(num).put("create_teacher",list2.get(0).getCreate_Teacher_Number());
+                jsonlist.get(num).put("create_time",list2.get(0).getCreat_time());
+                jsonlist.get(num).put("project_college",list2.get(0).getProject_College());
+                jsonlist.get(num).put("project_field",list2.get(0).getProject_Field());
+                jsonlist.get(num).put("project_description",list2.get(0).getProject_Description());
+                jsonlist.get(num).put("project_state",list2.get(0).getProject_State());
                 num++;
             }
             object.put("code",1);
@@ -169,5 +180,48 @@ public class ProjectController {
         return response;
     }
 
-   
+    //审核项目申请加入状态
+    @RequestMapping("/checkProjectApply")
+    public BaseResponse checkApply(@RequestBody ApplyProjectRequest request) {
+        Integer project_number=request.getProject_number();
+        Integer student_number=request.getStudent_number();
+        Integer project_approval=request.getProject_approval();
+
+        ApplyProjectPK applyProjectPK=new ApplyProjectPK();
+        applyProjectPK.setProjectnum(project_number);
+        applyProjectPK.setStudentnum(student_number);
+
+        Specification<ApplyProject> specification=new Specification<ApplyProject>() {
+
+            @Override
+            public Predicate toPredicate(Root<ApplyProject> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                List<Predicate> predicateList=new ArrayList<>();
+                Predicate shPredicate=criteriaBuilder.equal(root.get("applyProjectPK"),applyProjectPK);
+                predicateList.add(shPredicate);
+                Predicate[] predicates=new Predicate[predicateList.size()];
+                return criteriaBuilder.and(predicateList.toArray(predicates));
+            }
+        };
+        BaseResponse response=new ListResponse<>();
+
+        List<ApplyProject> list = applyProjectService.findAll(specification);
+        if(list.size()==0){
+            response.setCode(0);
+            response.setMsg("无此学生或无此队伍");
+            return response;
+        }
+
+        ApplyProject applyProject1= list.get(0);
+        boolean back=applyProjectService.findAllByProjectStudent(applyProject1,project_approval);
+        if(back){
+            response.setCode(1);
+            response.setMsg("已改");
+        }
+        else {
+            response.setCode(0);
+            response.setMsg("失败");
+        }
+        return response;
+    }
+
 }

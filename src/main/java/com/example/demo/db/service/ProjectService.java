@@ -7,6 +7,8 @@ import com.example.demo.db.mapper.TeamMapper;
 import com.example.demo.db.model.ApplyProject;
 import com.example.demo.db.model.Blink;
 import com.example.demo.db.model.Project;
+import com.example.demo.db.model.Student;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,4 +37,13 @@ public class ProjectService extends BaseService<Project,Integer, ProjectMapper> 
             return false;
         }
     }
+
+    public List<Project> findAllByProjectNumber(int projectNumber){
+        Project project=Project.builder().project_number(projectNumber).build();
+        Example<Project> example = Example.of(project);
+        List<Project> list = mapper.findAll(example);
+        return list;
+    }
+
+
 }

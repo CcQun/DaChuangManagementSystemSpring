@@ -41,12 +41,50 @@ public class BlinkService extends BaseService<Blink,Integer, BlinkMapper>{
         }
     }
 
-    /*public List<ApplyBlink> findAllByStudentNumber(int studentNumber){
+    public boolean changeState(Blink blink,int blinkapproval,int oldapproval){
+        int state=blink.getBlink_state();
+        if(blinkapproval==2){
+            if(oldapproval==1){
+                blink.setBlink_state(state-1);
+                try{
+                    mapper.save(blink);
+                    return true;
+                }catch (Exception e){
+                    e.printStackTrace();
+                    return false;
+                }
+            }
+            else {
+                return true;
+            }
+        }
+        else {
+            if(oldapproval==1){
+                return true;
+            }
+            else{
+                if(state==3){
+                    return false;
+                }
+                else {
+                    blink.setBlink_state(state+1);
+                    try{
+                        mapper.save(blink);
+                        return true;
+                    }catch (Exception e){
+                        e.printStackTrace();
+                        return false;
+                    }
+                }
+            }
 
-        ApplyBlinkPK applyBlinkPK=ApplyBlinkPK.builder().studentnum(studentNumber).build();
-        ApplyBlink applyBlink=ApplyBlink.builder().applyBlinkPK(applyBlinkPK).build();
-        Example<ApplyBlink> example=Example.of(applyBlink);
-        List<ApplyBlink> list1=mapper.findAll(example);
-        return list1;
-    }*/
+        }
+
+    }
+    public List<Blink> findAllByBlinkNumber(int blinkNumber){
+        Blink blink=Blink.builder().blink_number(blinkNumber).build();
+        Example<Blink> example = Example.of(blink);
+        List<Blink> list = mapper.findAll(example);
+        return list;
+    }
 }

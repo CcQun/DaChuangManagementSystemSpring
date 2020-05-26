@@ -5,10 +5,9 @@ import com.example.demo.core.request.ApplyBlinkRequest;
 import com.example.demo.core.request.StudentRequest;
 import com.example.demo.core.response.BaseResponse;
 import com.example.demo.core.response.ListResponse;
-import com.example.demo.db.mapper.ApplyBlinkMapper;
 import com.example.demo.db.model.*;
 import com.example.demo.db.service.ApplyBlinkService;
-import com.example.demo.db.service.BaseService;
+import com.example.demo.db.service.BlinkService;
 import com.example.demo.db.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -30,11 +29,13 @@ public class ApplyController {
     private final ApplyBlinkService applyBlinkService;
     @Autowired
     private final StudentService studentService;
+    @Autowired
+    private final BlinkService blinkService;
 
-
-    public ApplyController(ApplyBlinkService applyBlinkService, StudentService studentService) {
+    public ApplyController(ApplyBlinkService applyBlinkService, StudentService studentService, BlinkService blinkService) {
         this.applyBlinkService = applyBlinkService;
         this.studentService = studentService;
+        this.blinkService = blinkService;
     }
 
     //查询blink申请情况
@@ -125,16 +126,29 @@ public class ApplyController {
         }
 
         ApplyBlink applyBlink1= list.get(0);
-        boolean back=applyBlinkService.findAllByBlinkStudent(applyBlink1,blink_approval);
-        if(back){
-            response.setCode(1);
-            response.setMsg("已改");
-        }
-        else {
+        int blinknum=applyBlink1.getApplyBlinkPK().getBlinknum();
+        int oldapproval=applyBlink1.getBlink_Approval();
+        List<Blink> list1=blinkService.findAllByBlinkNumber(blinknum);
+        Blink blink=list1.get(0);
+        boolean back1=blinkService.changeState(blink,blink_approval,oldapproval);
+        //boolean back1=blinkService.findAllByBlinkNumber(blinknum,blink_approval);
+        if(!back1){
             response.setCode(0);
-            response.setMsg("失败");
+            response.setMsg("已满员");
+            return response;
         }
-        return response;
+        else{
+            boolean back=applyBlinkService.findAllByBlinkStudent(applyBlink1,blink_approval);
+            if(back){
+                response.setCode(1);
+                response.setMsg("已改");
+            }
+            else {
+                response.setCode(0);
+                response.setMsg("失败");
+            }
+            return response;
+        }
     }
     //查看自己申请blink的通过情况
     @ResponseBody
