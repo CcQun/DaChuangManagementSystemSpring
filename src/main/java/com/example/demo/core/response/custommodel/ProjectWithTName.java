@@ -13,14 +13,8 @@ import java.util.Date;
 @Data
 public class ProjectWithTName {
     private Integer project_number;
-
-    @Column(name="Create_Teacher_Number")
     private Integer Create_Teacher_Number;
-
-    @Column(name="Direct_Teacher_Number")
     private Integer Direct_Teacher_Number;
-
-    @Column(name="Create_Student_Number")
     private Integer Create_Student_Number;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:SS")
