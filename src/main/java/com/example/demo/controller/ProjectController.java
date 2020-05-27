@@ -320,7 +320,7 @@ public class ProjectController {
                 jsonlist.get(num).put("project_College",projects.get(i).getProject_College());
                 jsonlist.get(num).put("project_Field",projects.get(i).getProject_Field());
                 jsonlist.get(num).put("project_State",projects.get(i).getProject_State());
-                jsonlist.get(num).put("creat_time",projects.get(i).getCreate_time());
+                jsonlist.get(num).put("create_time",projects.get(i).getCreate_time());
                 num++;
             }
             else if(projects.get(i).getProject_Name().indexOf(str)!= -1){
@@ -340,7 +340,7 @@ public class ProjectController {
                 jsonlist.get(num).put("project_College",projects.get(i).getProject_College());
                 jsonlist.get(num).put("project_Field",projects.get(i).getProject_Field());
                 jsonlist.get(num).put("project_State",projects.get(i).getProject_State());
-                jsonlist.get(num).put("creat_time",projects.get(i).getCreate_time());
+                jsonlist.get(num).put("create_time",projects.get(i).getCreate_time());
                 num++;
             }
         }
@@ -375,7 +375,7 @@ public class ProjectController {
             jsonlist.get(num).put("project_College",projects.get(i).getProject_College());
             jsonlist.get(num).put("project_Field",projects.get(i).getProject_Field());
             jsonlist.get(num).put("project_State",projects.get(i).getProject_State());
-            jsonlist.get(num).put("creat_time",projects.get(i).getCreate_time());
+            jsonlist.get(num).put("create_time",projects.get(i).getCreate_time());
             num++;
         }
         object.put("code",1);
