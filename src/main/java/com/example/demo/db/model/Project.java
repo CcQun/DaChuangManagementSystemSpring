@@ -32,7 +32,7 @@ public class Project {
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:SS")
     @Column(name="Create_Time")
-    private Date creat_time;
+    private Date create_time;
 
     @Column(name="Project_Name")
     private String Project_Name;

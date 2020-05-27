@@ -32,7 +32,7 @@ public class Blink {
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:SS")
     @Column(name="Create_Time")
-    private Date creat_time;
+    private Date create_time;
 
     @Column(name="Blink_College")
     private String blink_college;
