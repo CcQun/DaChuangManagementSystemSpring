@@ -11,7 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 
-public interface ApplyProjectMapper extends BaseMapper<ApplyProject, ApplyProjectPK>{
+public interface ApplyProjectMapper extends BaseMapper<ApplyProject, ApplyProjectPK> {
     @Modifying
     @Transactional
     @Query(value = "delete from apply_project where Project_Number=(:Project_Number)", nativeQuery = true)

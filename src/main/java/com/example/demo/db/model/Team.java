@@ -17,8 +17,8 @@ import java.util.Date;
 @NoArgsConstructor
 @Builder
 
-@Table(name="TEAM")
-public class Team  implements Persistable {
+@Table(name = "TEAM")
+public class Team implements Persistable {
     @EmbeddedId
     private TeamPK teamPK;
 
@@ -26,7 +26,7 @@ public class Team  implements Persistable {
     private String group_description;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:SS")
-    @Column(name="Join_Time")
+    @Column(name = "Join_Time")
     private Date join_time;
 
     @Override

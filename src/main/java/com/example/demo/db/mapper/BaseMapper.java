@@ -9,5 +9,5 @@ import org.springframework.data.repository.NoRepositoryBean;
  * @Date 2020/5/19 15:22
  */
 @NoRepositoryBean
-public interface BaseMapper<E,PK> extends JpaRepository<E,PK>, JpaSpecificationExecutor<E> {
+public interface BaseMapper<E, PK> extends JpaRepository<E, PK>, JpaSpecificationExecutor<E> {
 }

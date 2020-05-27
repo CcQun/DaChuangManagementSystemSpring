@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import com.alibaba.fastjson.JSONObject;
 
 import com.example.demo.core.request.ApplyBlinkRequest;
@@ -47,6 +48,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import com.alibaba.fastjson.JSONObject;
 
 
@@ -186,10 +188,15 @@ public class BlinkController {
 
         String str = request.getKeywords();
         List<Blink> blinks = blinkService.findAll();
-
-        int num=0;
-        for (int i = 0; i<blinks.size(); i++){
-            if(blinks.get(i).getBlink_content().indexOf(str)!= -1){
+        if (str.length()==0||str==null||str.replaceAll("\\s*", "").length()==0){
+            object.put("code", 1);
+            object.put("msg", "yes");
+            object.put("data", jsonlist);
+            return object;
+        }
+        int num = 0;
+        for (int i = 0; i < blinks.size(); i++) {
+            if (blinks.get(i).getBlink_content().indexOf(str) != -1) {
                 jsonlist.add(new JSONObject());
                 jsonlist.get(num).put("blink_number",blinks.get(i).getBlink_number());
                 jsonlist.get(num).put("student_number",blinks.get(i).getStudent_number());

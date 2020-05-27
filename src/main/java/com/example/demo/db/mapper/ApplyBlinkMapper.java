@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 
-public interface ApplyBlinkMapper extends BaseMapper<ApplyBlink,ApplyBlinkPK>{
+public interface ApplyBlinkMapper extends BaseMapper<ApplyBlink, ApplyBlinkPK> {
     @Modifying
     @Transactional
     @Query(value = "delete from apply_blink where Blink_Number=(:Blink_Number)", nativeQuery = true)

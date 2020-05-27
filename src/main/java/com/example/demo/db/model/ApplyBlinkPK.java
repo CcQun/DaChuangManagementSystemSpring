@@ -14,9 +14,9 @@ import java.io.Serializable;
 @Data
 public class ApplyBlinkPK implements Serializable {
 
-    @Column(name="Blink_Number")
+    @Column(name = "Blink_Number")
     private Integer blinknum;
-    @Column(name="Student_Number")
+    @Column(name = "Student_Number")
     private Integer studentnum;
 
     @Override
@@ -36,7 +36,8 @@ public class ApplyBlinkPK implements Serializable {
         result = 31 * result + (studentnum != null ? studentnum.hashCode() : 0);
         return result;
     }
-    public String toString(){
-        return "applyblinkPK: blinknum= "+blinknum+",  "+"studentnum= "+studentnum;
+
+    public String toString() {
+        return "applyblinkPK: blinknum= " + blinknum + ",  " + "studentnum= " + studentnum;
     }
 }
