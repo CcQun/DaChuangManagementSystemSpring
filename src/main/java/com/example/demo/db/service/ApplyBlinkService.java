@@ -5,29 +5,29 @@ import com.example.demo.db.model.*;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ApplyBlinkService extends BaseService<ApplyBlink,ApplyBlinkPK, ApplyBlinkMapper>{
+public class ApplyBlinkService extends BaseService<ApplyBlink, ApplyBlinkPK, ApplyBlinkMapper> {
 
-    public boolean insert(ApplyBlink applyBlink){
-        try{
+    public boolean insert(ApplyBlink applyBlink) {
+        try {
             mapper.save(applyBlink);
             return true;
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println("主键冲突");
             return false;
         }
     }
 
-    public boolean findAllByBlinkStudent(ApplyBlink applyBlink,int approval){
+    public boolean findAllByBlinkStudent(ApplyBlink applyBlink, int approval) {
 
         applyBlink.setBlink_Approval(approval);
 
-        try{
+        try {
 
             mapper.save(applyBlink);
 
             return true;
 
-        }catch (Exception e){
+        } catch (Exception e) {
 
             e.printStackTrace();
 

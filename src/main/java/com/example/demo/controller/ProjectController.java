@@ -303,10 +303,15 @@ public class ProjectController {
 
         String str = request.getKeywords();
         List<Project> projects = projectService.findAll();
-
-        int num=0;
-        for (int i = 0; i<projects.size(); i++){
-            if(projects.get(i).getProject_Description().indexOf(str)!= -1){
+        if (str.length()==0||str==null||str.replaceAll("\\s*", "").length()==0){
+            object.put("code", 1);
+            object.put("msg", "yes");
+            object.put("data", jsonlist);
+            return object;
+        }
+        int num = 0;
+        for (int i = 0; i < projects.size(); i++) {
+            if (projects.get(i).getProject_Description().indexOf(str) != -1) {
                 jsonlist.add(new JSONObject());
                 jsonlist.get(num).put("project_number",projects.get(i).getProject_number());
                 jsonlist.get(num).put("create_teacher_number",projects.get(i).getCreate_Teacher_Number());
@@ -352,6 +357,7 @@ public class ProjectController {
         object.put("data",jsonlist);
         return object;
     }
+
     //查询project
     @ResponseBody
     @RequestMapping("/queryproject")

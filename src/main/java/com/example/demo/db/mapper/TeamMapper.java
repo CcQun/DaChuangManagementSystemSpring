@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
-public interface TeamMapper extends BaseMapper<Team, TeamPK>  {
+public interface TeamMapper extends BaseMapper<Team, TeamPK> {
     @Modifying
     @Transactional
     @Query(value = "delete from team where Project_Number=(:Project_Number)", nativeQuery = true)
