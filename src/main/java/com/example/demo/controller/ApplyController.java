@@ -191,7 +191,7 @@ public class ApplyController {
                 jsonlist.get(num).put("blink_title",blink.get(0).getBlink_title());
                 jsonlist.get(num).put("blink_college",blink.get(0).getBlink_college());
                 jsonlist.get(num).put("blink_field",blink.get(0).getBlink_field());
-                jsonlist.get(num).put("blink_create_time",blink.get(0).getCreat_time());
+                jsonlist.get(num).put("blink_create_time",blink.get(0).getCreate_time());
                 num++;
             }
             object.put("code",1);
