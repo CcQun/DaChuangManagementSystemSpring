@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.example.demo.core.request.*;
 import com.example.demo.core.response.BaseResponse;
 import com.example.demo.core.response.ListResponse;
+import com.example.demo.core.response.custommodel.ProjectWithTName;
 import com.example.demo.db.model.*;
 import com.example.demo.db.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,34 +70,36 @@ public class ProjectController {
         return response;
     }
 
-//    //查看自己发布的project
-//    @RequestMapping("/myProject")
-//    public ListResponse<BlinkWithSName> myBlink(@RequestBody MyBlinkRequest request){
-//        Blink blink = Blink.builder().student_number(request.getStudent_number()).build();
-//        List<Blink> list = blinkService.findAll(blink);
-//        List<BlinkWithSName> res = new ArrayList<>();
-//        for(int i = 0;i < list.size();i++){
-//            Blink blink1 = list.get(i);
-//            Student student = Student.builder().student_number(blink1.getStudent_number()).build();
-//            String student_name = studentService.findAll(student).get(0).getStudent_name();
-//            BlinkWithSName bwsn = BlinkWithSName.builder()
-//                    .blink_number(blink1.getBlink_number())
-//                    .student_number(blink1.getStudent_number())
-//                    .blink_college(blink1.getBlink_college())
-//                    .blink_content(blink1.getBlink_content())
-//                    .blink_field(blink1.getBlink_field())
-//                    .blink_state(blink1.getBlink_state())
-//                    .blink_title(blink1.getBlink_title())
-//                    .create_time(blink1.getCreat_time())
-//                    .student_name(student_name)
-//                    .build();
-//            res.add(bwsn);
-//        }
-//        ListResponse<BlinkWithSName> response = new ListResponse<>();
-//        response.setData(res);
-//        response.setCode(1);
-//        return response;
-//    }
+    //查看自己发布的project
+    @RequestMapping("/myProject")
+    public ListResponse<ProjectWithTName> myProject(@RequestBody MyProjectRequest request){
+        Project project = Project.builder().Create_Teacher_Number(request.getTeacher_number()).build();
+        List<Project> list = projectService.findAll(project);
+        List<ProjectWithTName> res = new ArrayList<>();
+        for(int i = 0;i < list.size();i++){
+            Project project1 = list.get(i);
+            Teacher teacher = Teacher.builder().teacher_number(project1.getCreate_Teacher_Number()).build();
+            String teacher_name = teacherService.findAll(teacher).get(0).getTeacher_name();
+            ProjectWithTName pwtn = ProjectWithTName.builder()
+                    .Create_Teacher_Name(teacher_name)
+                    .Create_Teacher_Number(project1.getCreate_Teacher_Number())
+                    .create_time(project1.getCreate_time())
+                    .Direct_Teacher_Name(teacher_name)
+                    .Direct_Teacher_Number(project1.getDirect_Teacher_Number())
+                    .project_college(project1.getProject_College())
+                    .project_description(project1.getProject_Description())
+                    .project_field(project1.getProject_Field())
+                    .project_name(project1.getProject_Name())
+                    .project_number(project1.getProject_number())
+                    .project_State(project1.getProject_State())
+                    .build();
+            res.add(pwtn);
+        }
+        ListResponse<ProjectWithTName> response = new ListResponse<>();
+        response.setData(res);
+        response.setCode(1);
+        return response;
+    }
 
     //申请加入某个project
     @RequestMapping("/applyProject")
@@ -320,7 +323,7 @@ public class ProjectController {
                 jsonlist.get(num).put("project_College",projects.get(i).getProject_College());
                 jsonlist.get(num).put("project_Field",projects.get(i).getProject_Field());
                 jsonlist.get(num).put("project_State",projects.get(i).getProject_State());
-                jsonlist.get(num).put("creat_time",projects.get(i).getCreate_time());
+                jsonlist.get(num).put("create_time",projects.get(i).getCreate_time());
                 num++;
             }
             else if(projects.get(i).getProject_Name().indexOf(str)!= -1){
@@ -340,7 +343,7 @@ public class ProjectController {
                 jsonlist.get(num).put("project_College",projects.get(i).getProject_College());
                 jsonlist.get(num).put("project_Field",projects.get(i).getProject_Field());
                 jsonlist.get(num).put("project_State",projects.get(i).getProject_State());
-                jsonlist.get(num).put("creat_time",projects.get(i).getCreate_time());
+                jsonlist.get(num).put("create_time",projects.get(i).getCreate_time());
                 num++;
             }
         }
@@ -375,7 +378,7 @@ public class ProjectController {
             jsonlist.get(num).put("project_College",projects.get(i).getProject_College());
             jsonlist.get(num).put("project_Field",projects.get(i).getProject_Field());
             jsonlist.get(num).put("project_State",projects.get(i).getProject_State());
-            jsonlist.get(num).put("creat_time",projects.get(i).getCreate_time());
+            jsonlist.get(num).put("create_time",projects.get(i).getCreate_time());
             num++;
         }
         object.put("code",1);
