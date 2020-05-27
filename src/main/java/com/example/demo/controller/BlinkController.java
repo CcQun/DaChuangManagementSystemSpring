@@ -28,6 +28,39 @@ import com.example.demo.core.request.ApplyBlinkRequest;
 import com.example.demo.core.request.MyBlinkRequest;
 import com.example.demo.core.request.PublishBlinkRequest;
 import com.example.demo.core.request.SearchBlinkRequest;
+import com.example.demo.core.response.BaseResponse;
+import com.example.demo.core.response.ListResponse;
+import com.example.demo.db.model.ApplyBlink;
+import com.example.demo.db.model.ApplyBlinkPK;
+import com.example.demo.db.model.Blink;
+import com.example.demo.db.service.ApplyBlinkService;
+import com.example.demo.db.service.BlinkService;
+import com.example.demo.db.service.StudentService;
+import org.json.JSONException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import com.alibaba.fastjson.JSONObject;
+
+
+import com.example.demo.core.request.ApplyBlinkRequest;
+import com.example.demo.core.request.MyBlinkRequest;
+import com.example.demo.core.request.PublishBlinkRequest;
+import com.example.demo.core.request.SearchBlinkRequest;
+import com.example.demo.core.response.BaseResponse;
+import com.example.demo.core.response.ListResponse;
+import com.example.demo.core.response.custommodel.BlinkWithSName;
+import com.example.demo.db.model.ApplyBlink;
+import com.example.demo.db.model.ApplyBlinkPK;
+import com.example.demo.db.model.Blink;
 import com.example.demo.db.model.Student;
 
 /**
@@ -63,7 +96,7 @@ public class BlinkController {
                 .student_number(request.getStudent_number())
                 .blink_title(request.getBlink_title())
                 .blink_content(request.getBlink_content())
-                .create_time(new Date())
+                .creat_time(new Date())
                 .blink_college(request.getBlink_college())
                 .blink_field(request.getBlink_field())
                 .blink_state(new Integer(0))
@@ -116,7 +149,7 @@ public class BlinkController {
                     .blink_field(blink1.getBlink_field())
                     .blink_state(blink1.getBlink_state())
                     .blink_title(blink1.getBlink_title())
-                    .create_time(blink1.getCreate_time())
+                    .create_time(blink1.getCreat_time())
                     .student_name(student_name)
                     .build();
             res.add(bwsn);
@@ -135,6 +168,7 @@ public class BlinkController {
     }
 
     //关键字搜索blink
+
     @ResponseBody
     @RequestMapping("/searchblink")
     public JSONObject searchblink(@RequestBody SearchBlinkRequest request) throws JSONException {
@@ -144,10 +178,15 @@ public class BlinkController {
 
         String str = request.getKeywords();
         List<Blink> blinks = blinkService.findAll();
-
-        int num=0;
-        for (int i = 0; i<blinks.size(); i++){
-            if(blinks.get(i).getBlink_content().indexOf(str)!= -1){
+        if (str.length()==0||str==null||str.replaceAll("\\s*", "").length()==0){
+            object.put("code", 1);
+            object.put("msg", "yes");
+            object.put("data", jsonlist);
+            return object;
+        }
+        int num = 0;
+        for (int i = 0; i < blinks.size(); i++) {
+            if (blinks.get(i).getBlink_content().indexOf(str) != -1) {
                 jsonlist.add(new JSONObject());
                 jsonlist.get(num).put("blink_number",blinks.get(i).getBlink_number());
                 jsonlist.get(num).put("student_number",blinks.get(i).getStudent_number());
@@ -157,7 +196,7 @@ public class BlinkController {
                 jsonlist.get(num).put("student_name",studentService.findAllByStudentNumber(studentnum).get(0).getStudent_name());
                 jsonlist.get(num).put("blink_title",blinks.get(i).getBlink_title());
                 jsonlist.get(num).put("blink_content",blinks.get(i).getBlink_content());
-                jsonlist.get(num).put("create_time",blinks.get(i).getCreate_time());
+                jsonlist.get(num).put("create_time",blinks.get(i).getCreat_time());
                 jsonlist.get(num).put("blink_college",blinks.get(i).getBlink_college());
                 jsonlist.get(num).put("blink_field",blinks.get(i).getBlink_field());
                 jsonlist.get(num).put("blink_state",blinks.get(i).getBlink_state());
@@ -173,7 +212,7 @@ public class BlinkController {
                 jsonlist.get(num).put("student_name",studentService.findAllByStudentNumber(studentnum).get(0).getStudent_name());
                 jsonlist.get(num).put("blink_title",blinks.get(i).getBlink_title());
                 jsonlist.get(num).put("blink_content",blinks.get(i).getBlink_content());
-                jsonlist.get(num).put("create_time",blinks.get(i).getCreate_time());
+                jsonlist.get(num).put("create_time",blinks.get(i).getCreat_time());
                 jsonlist.get(num).put("blink_college",blinks.get(i).getBlink_college());
                 jsonlist.get(num).put("blink_field",blinks.get(i).getBlink_field());
                 jsonlist.get(num).put("blink_state",blinks.get(i).getBlink_state());
@@ -186,6 +225,17 @@ public class BlinkController {
         return object;
     }
 
+    //获得最大blink number
+    public Integer getMaxBlinkNumber() {
+        List<Blink> blinks = blinkService.findAll();
+        Integer maxBlinkNumber = 0;
+        for (int i = 0; i < blinks.size(); i++) {
+            if (blinks.get(i).getBlink_number() > maxBlinkNumber) {
+                maxBlinkNumber = blinks.get(i).getBlink_number();
+            }
+        }
+        return maxBlinkNumber;
+    }
 
     //删除blink
     @RequestMapping("/deleteblink")
@@ -200,17 +250,5 @@ public class BlinkController {
             response.setMsg("False");
         }
         return response;
-    }
-
-    //获得最大blink number
-    public Integer getMaxBlinkNumber() {
-        List<Blink> blinks = blinkService.findAll();
-        Integer maxBlinkNumber = 0;
-        for (int i = 0; i < blinks.size(); i++) {
-            if (blinks.get(i).getBlink_number() > maxBlinkNumber) {
-                maxBlinkNumber = blinks.get(i).getBlink_number();
-            }
-        }
-        return maxBlinkNumber;
     }
 }

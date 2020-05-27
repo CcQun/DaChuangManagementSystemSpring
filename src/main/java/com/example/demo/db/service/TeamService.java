@@ -7,6 +7,6 @@ import com.example.demo.db.model.TeamPK;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TeamService extends BaseService<Team, TeamPK, TeamMapper>  {
+public class TeamService extends BaseService<Team, TeamPK, TeamMapper> {
 
 }

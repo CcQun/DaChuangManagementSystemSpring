@@ -15,7 +15,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Builder
 
-@Table(name="APPLY_PROJECT")
+@Table(name = "APPLY_PROJECT")
 public class ApplyProject implements Persistable {
     @EmbeddedId
     private ApplyProjectPK applyProjectPK;
@@ -23,8 +23,8 @@ public class ApplyProject implements Persistable {
     @Column(name = "Project_Approval")
     private Integer Project_Approval;
 
-    public String toString(){
-        return "applyproject= "+getApplyProjectPK();
+    public String toString() {
+        return "applyproject= " + getApplyProjectPK();
     }
 
     @Override
