@@ -98,7 +98,7 @@ public class ProjectController {
         }
         int num = 0;
         for (int i = 0; i < projects.size(); i++) {
-            if (projects.get(i).getProject_Description().indexOf(str) != -1) {
+            if (projects.get(i).getProject_Description().indexOf(str) != -1) {//
                 jsonlist.add(new JSONObject());
                 jsonlist.get(num).put("project_number",projects.get(i).getProject_number());
                 jsonlist.get(num).put("create_teacher_number",projects.get(i).getCreate_Teacher_Number());
