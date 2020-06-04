@@ -303,21 +303,41 @@ public class ProjectController {
 
         String str = request.getKeywords();
         List<Project> projects = projectService.findAll();
-
-        int num=0;
-        for (int i = 0; i<projects.size(); i++){
-            if(projects.get(i).getProject_Description().indexOf(str)!= -1){
+        if (str.length()==0||str==null||str.replaceAll("\\s*", "").length()==0){
+            object.put("code", 1);
+            object.put("msg", "yes");
+            object.put("data", jsonlist);
+            return object;
+        }
+        int num = 0;
+        for (int i = 0; i < projects.size(); i++) {
+            if (projects.get(i).getProject_Description().indexOf(str) != -1) {//
                 jsonlist.add(new JSONObject());
                 jsonlist.get(num).put("project_number",projects.get(i).getProject_number());
                 jsonlist.get(num).put("create_teacher_number",projects.get(i).getCreate_Teacher_Number());
                 jsonlist.get(num).put("student_number",projects.get(i).getCreate_Student_Number());
                 jsonlist.get(num).put("direct_teacher_number",projects.get(i).getDirect_Teacher_Number());
-                int studentnum=projects.get(i).getCreate_Student_Number();
-                int create_teacher_number=projects.get(i).getCreate_Teacher_Number();
-                int direct_teacher_number=projects.get(i).getDirect_Teacher_Number();
-                jsonlist.get(num).put("student_name",studentService.findAllByStudentNumber(studentnum).get(0).getStudent_name());
-                jsonlist.get(num).put("create_teacher_name",teacherService.findAllByTeacherNumber(create_teacher_number).get(0).getTeacher_name());
-                jsonlist.get(num).put("direct_teacher_name",teacherService.findAllByTeacherNumber(direct_teacher_number).get(0).getTeacher_name());
+                Integer studentnum=projects.get(i).getCreate_Student_Number();
+                Integer create_teacher_number=projects.get(i).getCreate_Teacher_Number();
+                Integer direct_teacher_number=projects.get(i).getDirect_Teacher_Number();
+                if(studentnum==null){
+                    jsonlist.get(num).put("student_name",null);
+                }
+                else{
+                    jsonlist.get(num).put("student_name",studentService.findAllByStudentNumber(studentnum).get(0).getStudent_name());
+                }
+                if(create_teacher_number==null){
+                    jsonlist.get(num).put("create_teacher_name",null);
+                }
+                else{
+                    jsonlist.get(num).put("create_teacher_name",teacherService.findAllByTeacherNumber(create_teacher_number).get(0).getTeacher_name());
+                }
+                if(direct_teacher_number==null){
+                    jsonlist.get(num).put("direct_teacher_name",null);
+                }
+                else{
+                    jsonlist.get(num).put("direct_teacher_name",teacherService.findAllByTeacherNumber(direct_teacher_number).get(0).getTeacher_name());
+                }
                 jsonlist.get(num).put("project_Name",projects.get(i).getProject_Name());
                 jsonlist.get(num).put("project_Description",projects.get(i).getProject_Description());
                 jsonlist.get(num).put("project_College",projects.get(i).getProject_College());
@@ -332,12 +352,27 @@ public class ProjectController {
                 jsonlist.get(num).put("create_teacher_number",projects.get(i).getCreate_Teacher_Number());
                 jsonlist.get(num).put("student_number",projects.get(i).getCreate_Student_Number());
                 jsonlist.get(num).put("direct_teacher_number",projects.get(i).getDirect_Teacher_Number());
-                int studentnum=projects.get(i).getCreate_Student_Number();
-                int create_teacher_number=projects.get(i).getCreate_Teacher_Number();
-                int direct_teacher_number=projects.get(i).getDirect_Teacher_Number();
-                jsonlist.get(num).put("student_name",studentService.findAllByStudentNumber(studentnum).get(0).getStudent_name());
-                jsonlist.get(num).put("create_teacher_name",teacherService.findAllByTeacherNumber(create_teacher_number).get(0).getTeacher_name());
-                jsonlist.get(num).put("direct_teacher_name",teacherService.findAllByTeacherNumber(direct_teacher_number).get(0).getTeacher_name());
+                Integer studentnum=projects.get(i).getCreate_Student_Number();
+                Integer create_teacher_number=projects.get(i).getCreate_Teacher_Number();
+                Integer direct_teacher_number=projects.get(i).getDirect_Teacher_Number();
+                if(studentnum==null){
+                    jsonlist.get(num).put("student_name",null);
+                }
+                else{
+                    jsonlist.get(num).put("student_name",studentService.findAllByStudentNumber(studentnum).get(0).getStudent_name());
+                }
+                if(create_teacher_number==null){
+                    jsonlist.get(num).put("create_teacher_name",null);
+                }
+                else{
+                    jsonlist.get(num).put("create_teacher_name",teacherService.findAllByTeacherNumber(create_teacher_number).get(0).getTeacher_name());
+                }
+                if(direct_teacher_number==null){
+                    jsonlist.get(num).put("direct_teacher_name",null);
+                }
+                else{
+                    jsonlist.get(num).put("direct_teacher_name",teacherService.findAllByTeacherNumber(direct_teacher_number).get(0).getTeacher_name());
+                }
                 jsonlist.get(num).put("project_Name",projects.get(i).getProject_Name());
                 jsonlist.get(num).put("project_Description",projects.get(i).getProject_Description());
                 jsonlist.get(num).put("project_College",projects.get(i).getProject_College());
@@ -352,6 +387,7 @@ public class ProjectController {
         object.put("data",jsonlist);
         return object;
     }
+
     //查询project
     @ResponseBody
     @RequestMapping("/queryproject")
@@ -367,12 +403,27 @@ public class ProjectController {
             jsonlist.get(num).put("create_teacher_number",projects.get(i).getCreate_Teacher_Number());
             jsonlist.get(num).put("student_number",projects.get(i).getCreate_Student_Number());
             jsonlist.get(num).put("direct_teacher_number",projects.get(i).getDirect_Teacher_Number());
-            int studentnum=projects.get(i).getCreate_Student_Number();
-            int create_teacher_number=projects.get(i).getCreate_Teacher_Number();
-            int direct_teacher_number=projects.get(i).getDirect_Teacher_Number();
-            jsonlist.get(num).put("student_name",studentService.findAllByStudentNumber(studentnum).get(0).getStudent_name());
-            jsonlist.get(num).put("create_teacher_name",teacherService.findAllByTeacherNumber(create_teacher_number).get(0).getTeacher_name());
-            jsonlist.get(num).put("direct_teacher_name",teacherService.findAllByTeacherNumber(direct_teacher_number).get(0).getTeacher_name());
+            Integer studentnum=projects.get(i).getCreate_Student_Number();
+            Integer create_teacher_number=projects.get(i).getCreate_Teacher_Number();
+            Integer direct_teacher_number=projects.get(i).getDirect_Teacher_Number();
+            if(studentnum==null){
+                jsonlist.get(num).put("student_name",null);
+            }
+            else{
+                jsonlist.get(num).put("student_name",studentService.findAllByStudentNumber(studentnum).get(0).getStudent_name());
+            }
+            if(create_teacher_number==null){
+                jsonlist.get(num).put("create_teacher_name",null);
+            }
+            else{
+                jsonlist.get(num).put("create_teacher_name",teacherService.findAllByTeacherNumber(create_teacher_number).get(0).getTeacher_name());
+            }
+            if(direct_teacher_number==null){
+                jsonlist.get(num).put("direct_teacher_name",null);
+            }
+            else{
+                jsonlist.get(num).put("direct_teacher_name",teacherService.findAllByTeacherNumber(direct_teacher_number).get(0).getTeacher_name());
+            }
             jsonlist.get(num).put("project_Name",projects.get(i).getProject_Name());
             jsonlist.get(num).put("project_Description",projects.get(i).getProject_Description());
             jsonlist.get(num).put("project_College",projects.get(i).getProject_College());

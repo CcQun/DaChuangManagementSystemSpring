@@ -16,7 +16,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Builder
 @Data
-public class ApplyStudent{
+public class ApplyStudent {
     @Id
     private Integer blinknum;
     private Integer blink_approval;

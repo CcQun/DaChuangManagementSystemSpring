@@ -28,6 +28,39 @@ import com.example.demo.core.request.ApplyBlinkRequest;
 import com.example.demo.core.request.MyBlinkRequest;
 import com.example.demo.core.request.PublishBlinkRequest;
 import com.example.demo.core.request.SearchBlinkRequest;
+import com.example.demo.core.response.BaseResponse;
+import com.example.demo.core.response.ListResponse;
+import com.example.demo.db.model.ApplyBlink;
+import com.example.demo.db.model.ApplyBlinkPK;
+import com.example.demo.db.model.Blink;
+import com.example.demo.db.service.ApplyBlinkService;
+import com.example.demo.db.service.BlinkService;
+import com.example.demo.db.service.StudentService;
+import org.json.JSONException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import com.alibaba.fastjson.JSONObject;
+
+
+import com.example.demo.core.request.ApplyBlinkRequest;
+import com.example.demo.core.request.MyBlinkRequest;
+import com.example.demo.core.request.PublishBlinkRequest;
+import com.example.demo.core.request.SearchBlinkRequest;
+import com.example.demo.core.response.BaseResponse;
+import com.example.demo.core.response.ListResponse;
+import com.example.demo.core.response.custommodel.BlinkWithSName;
+import com.example.demo.db.model.ApplyBlink;
+import com.example.demo.db.model.ApplyBlinkPK;
+import com.example.demo.db.model.Blink;
 import com.example.demo.db.model.Student;
 
 /**
@@ -135,6 +168,7 @@ public class BlinkController {
     }
 
     //关键字搜索blink
+
     @ResponseBody
     @RequestMapping("/searchblink")
     public JSONObject searchblink(@RequestBody SearchBlinkRequest request) throws JSONException {
@@ -144,10 +178,15 @@ public class BlinkController {
 
         String str = request.getKeywords();
         List<Blink> blinks = blinkService.findAll();
-
-        int num=0;
-        for (int i = 0; i<blinks.size(); i++){
-            if(blinks.get(i).getBlink_content().indexOf(str)!= -1){
+        if (str.length()==0||str==null||str.replaceAll("\\s*", "").length()==0){
+            object.put("code", 1);
+            object.put("msg", "yes");
+            object.put("data", jsonlist);
+            return object;
+        }
+        int num = 0;
+        for (int i = 0; i < blinks.size(); i++) {
+            if (blinks.get(i).getBlink_content().indexOf(str) != -1) {
                 jsonlist.add(new JSONObject());
                 jsonlist.get(num).put("blink_number",blinks.get(i).getBlink_number());
                 jsonlist.get(num).put("student_number",blinks.get(i).getStudent_number());
