@@ -9,9 +9,8 @@ import com.example.demo.db.model.Student;
 import com.example.demo.db.model.Teacher;
 import com.example.demo.db.service.StudentService;
 import com.example.demo.db.service.TeacherService;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,7 +36,7 @@ public class ElseController {
     //上传图片
     @ResponseBody
     @RequestMapping(value = "/fileUpload")
-    public JSONObject fileUpload(@RequestParam("file") MultipartFile file,@RequestParam("name") String name){
+    public JSONObject fileUpload(@RequestParam("file") MultipartFile file, @RequestParam("name") String name){
         if(file.isEmpty()){
             JSONObject json = new JSONObject();
             json.put("response", "false");
