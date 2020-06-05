@@ -273,6 +273,7 @@ public class ProjectController {
         int oldapproval=applyProject1.getProject_Approval();
         List<Project> list1=projectService.findAllByBlinkNumber(projectnum);
         Project project=list1.get(0);
+
         boolean back1=projectService.changeState(project,project_approval,oldapproval);
         if(!back1){
             response.setCode(0);
