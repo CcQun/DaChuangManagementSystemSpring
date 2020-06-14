@@ -27,8 +27,6 @@ public class ApplyController {
     @Autowired
     private final ApplyBlinkService applyBlinkService;
     @Autowired
-    private final ApplyDirectService applyDirectService;
-    @Autowired
     private final StudentService studentService;
     @Autowired
     private final BlinkService blinkService;
@@ -36,9 +34,8 @@ public class ApplyController {
     @Autowired
     private final ProjectService projectService;
 
-    public ApplyController(ApplyBlinkService applyBlinkService, ApplyDirectService applyDirectService, StudentService studentService, BlinkService blinkService, ProjectService projectService) {
+    public ApplyController(ApplyBlinkService applyBlinkService, StudentService studentService, BlinkService blinkService, ProjectService projectService) {
         this.applyBlinkService = applyBlinkService;
-        this.applyDirectService = applyDirectService;
         this.studentService = studentService;
         this.blinkService = blinkService;
         this.projectService = projectService;
@@ -47,30 +44,29 @@ public class ApplyController {
     //查询blink申请情况
     @RequestMapping("/selectApply")
     public ListResponse<ApplyBlink> selectApply(@RequestBody ApplyBlinkRequest request) {
-        Integer blink_number=request.getBlink_number();
-        ListResponse<ApplyBlink> response=new ListResponse<>();
+        Integer blink_number = request.getBlink_number();
+        ListResponse<ApplyBlink> response = new ListResponse<>();
 
-        Specification<ApplyBlink> specification=new Specification<ApplyBlink>() {
+        Specification<ApplyBlink> specification = new Specification<ApplyBlink>() {
             @Override
             public Predicate toPredicate(Root<ApplyBlink> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-                List<Predicate> predicateList=new ArrayList<>();
-                Predicate shPredicate=criteriaBuilder.equal(root.get("applyBlinkPK").get("blinknum"),blink_number);
+                List<Predicate> predicateList = new ArrayList<>();
+                Predicate shPredicate = criteriaBuilder.equal(root.get("applyBlinkPK").get("blinknum"), blink_number);
                 predicateList.add(shPredicate);
-                Predicate[] predicates=new Predicate[predicateList.size()];
+                Predicate[] predicates = new Predicate[predicateList.size()];
                 return criteriaBuilder.and(predicateList.toArray(predicates));
             }
         };
 
         List<ApplyBlink> list = applyBlinkService.findAll(specification);
         List list2 = new ArrayList();
-        if(list.size()==0){
+        if (list.size() == 0) {
             response.setMsg("No apply");
-        }
-        else {
+        } else {
             response.setCode(1);
             response.setMsg("Have apply");
-            for(int i=0;i<list.size();i++){
-                ApplyStudent applyStudent=new ApplyStudent();
+            for (int i = 0; i < list.size(); i++) {
+                ApplyStudent applyStudent = new ApplyStudent();
                 List<Student> list1 = studentService.findAllByStudentNumber(list.get(i).getApplyBlinkPK().getStudentnum());
                 applyStudent.setBlinknum(list.get(i).getApplyBlinkPK().getBlinknum());
                 applyStudent.setBlink_approval(list.get(i).getBlink_Approval());
@@ -91,9 +87,9 @@ public class ApplyController {
     //根据ID查看学生信息
     @RequestMapping("/selectStudent")
     public BaseResponse selectStudent(@RequestBody StudentRequest request) {
-        Integer student_number=request.getStudent_number();
-        System.out.println("aaa"+student_number);
-        ListResponse<Student> response=new ListResponse<>();
+        Integer student_number = request.getStudent_number();
+        System.out.println("aaa" + student_number);
+        ListResponse<Student> response = new ListResponse<>();
         List<Student> list = studentService.findAllByStudentNumber(student_number);
         System.out.println(list);
         response.setData(list);
@@ -103,29 +99,29 @@ public class ApplyController {
     //审核blink申请加入状态
     @RequestMapping("/checkApply")
     public BaseResponse checkApply(@RequestBody ApplyBlinkRequest request) {
-        Integer blink_number=request.getBlink_number();
-        Integer student_number=request.getStudent_number();
-        Integer blink_approval=request.getBlink_approval();
+        Integer blink_number = request.getBlink_number();
+        Integer student_number = request.getStudent_number();
+        Integer blink_approval = request.getBlink_approval();
 
-        ApplyBlinkPK applyBlinkPK=new ApplyBlinkPK();
+        ApplyBlinkPK applyBlinkPK = new ApplyBlinkPK();
         applyBlinkPK.setBlinknum(blink_number);
         applyBlinkPK.setStudentnum(student_number);
 
-        Specification<ApplyBlink> specification=new Specification<ApplyBlink>() {
+        Specification<ApplyBlink> specification = new Specification<ApplyBlink>() {
 
             @Override
             public Predicate toPredicate(Root<ApplyBlink> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-                List<Predicate> predicateList=new ArrayList<>();
-                Predicate shPredicate=criteriaBuilder.equal(root.get("applyBlinkPK"),applyBlinkPK);
+                List<Predicate> predicateList = new ArrayList<>();
+                Predicate shPredicate = criteriaBuilder.equal(root.get("applyBlinkPK"), applyBlinkPK);
                 predicateList.add(shPredicate);
-                Predicate[] predicates=new Predicate[predicateList.size()];
+                Predicate[] predicates = new Predicate[predicateList.size()];
                 return criteriaBuilder.and(predicateList.toArray(predicates));
             }
         };
-        BaseResponse response=new ListResponse<>();
+        BaseResponse response = new ListResponse<>();
 
         List<ApplyBlink> list = applyBlinkService.findAll(specification);
-        if(list.size()==0){
+        if (list.size() == 0) {
             response.setCode(0);
             response.setMsg("无此学生或无此队伍");
             return response;
@@ -137,7 +133,7 @@ public class ApplyController {
         List<Blink> list1=blinkService.findAllByBlinkNumber(blinknum);
         Blink blink=list1.get(0);
         int max=this.getMaxProjectNumber();
-        boolean back1=blinkService.changeState(blink,blink_approval,oldapproval,max,student_number);
+        boolean back1=blinkService.changeState(blink,blink_approval,oldapproval,max);
         //boolean back1=blinkService.findAllByBlinkNumber(blinknum,blink_approval);
         if(!back1){
             response.setCode(0);
@@ -208,6 +204,12 @@ public class ApplyController {
         }
     }
 
+    //申请指导老师
+    @RequestMapping("/applydirect")
+    public BaseResponse applydirect(@RequestBody ApplyDirectRequest request){
+        return null;
+    }
+
     //获得最大project number
     public Integer getMaxProjectNumber() {
         List<Project> projects = projectService.findAll();
@@ -219,48 +221,4 @@ public class ApplyController {
         }
         return maxProjectNumber;
     }
-
-    //教师查看申请
-    @RequestMapping("/ViewInstructorApplication")
-    public ListResponse<ApplyDirect> ViewInstructorApplication(@RequestBody ApplyDirectRequest request) {
-        Integer teacher_number=request.getTeacher_number();
-        ListResponse<ApplyDirect> response=new ListResponse<>();
-
-        Specification<ApplyDirect> specification=new Specification<ApplyDirect>() {
-            @Override
-            public Predicate toPredicate(Root<ApplyDirect> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-                List<Predicate> predicateList=new ArrayList<>();
-                Predicate shPredicate=criteriaBuilder.equal(root.get("applyDirectPKv").get("teachernum"),teacher_number);
-                predicateList.add(shPredicate);
-                Predicate[] predicates=new Predicate[predicateList.size()];
-                return criteriaBuilder.and(predicateList.toArray(predicates));
-            }
-        };
-
-        List<ApplyDirect> list = applyDirectService.findAll(specification);
-        List list2 = new ArrayList();
-        if(list.size()==0){
-            response.setMsg("No apply");
-        }
-        else {
-            response.setCode(1);
-            response.setMsg("Have apply");
-            for(int i=0;i<list.size();i++){
-                ProjectStudent projectStudent=new ProjectStudent();
-                List<Project> list1 = projectService.findAllByProjectNumber(list.get(i).getApplyDirectPK().getProjectnum());
-                List<Student> list3 = studentService.findAllByStudentNumber(list1.get(0).getCreate_Student_Number());
-                projectStudent.setProject_College(list1.get(0).getProject_College());
-                projectStudent.setProject_Description(list1.get(0).getProject_Description());
-                projectStudent.setProject_Field(list1.get(0).getProject_Field());
-                projectStudent.setProject_Name(list1.get(0).getProject_Name());
-                projectStudent.setProject_number(list.get(i).getApplyDirectPK().getProjectnum());
-                projectStudent.setStudent_number(list1.get(0).getCreate_Student_Number());
-                projectStudent.setStudent_name(list3.get(0).getStudent_name());
-                list2.add(projectStudent);
-            }
-            response.setData(list2);
-        }
-        return response;
-    }
-
 }

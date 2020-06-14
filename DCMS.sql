@@ -13,7 +13,7 @@ USE DCMS;
 drop table if exists APPLY_BLINK;
 
 drop table if exists APPLY_DIRECT;
-
+程度DD
 drop table if exists APPLY_PROJECT;
 
 drop table if exists BLINK;
