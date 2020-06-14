@@ -1,12 +1,10 @@
 package com.example.demo.db.service;
 
+import com.example.demo.core.response.BaseResponse;
 import com.example.demo.db.mapper.ApplyBlinkMapper;
 import com.example.demo.db.mapper.BlinkMapper;
-import com.example.demo.db.mapper.StudentMapper;
-import com.example.demo.db.model.ApplyBlink;
-import com.example.demo.db.model.ApplyBlinkPK;
-import com.example.demo.db.model.Blink;
-import com.example.demo.db.model.Student;
+import com.example.demo.db.model.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
@@ -20,10 +18,13 @@ import java.util.List;
 public class BlinkService extends BaseService<Blink,Integer, BlinkMapper>{
     private final BlinkMapper BlinkMapper;
     private final ApplyBlinkMapper applyBlinkMapper;
+    @Autowired
+    private final ProjectService projectService;
 
-    public BlinkService(BlinkMapper blinkMapper,ApplyBlinkMapper applyBlinkMapper) {
+    public BlinkService(BlinkMapper blinkMapper, ApplyBlinkMapper applyBlinkMapper, ProjectService projectService) {
         this.BlinkMapper = blinkMapper;
         this.applyBlinkMapper=applyBlinkMapper;
+        this.projectService = projectService;
     }
     public List<Blink> findAll(){
         return BlinkMapper.findAll();
@@ -41,7 +42,7 @@ public class BlinkService extends BaseService<Blink,Integer, BlinkMapper>{
         }
     }
 
-    public boolean changeState(Blink blink,int blinkapproval,int oldapproval){
+    public boolean changeState(Blink blink,int blinkapproval,int oldapproval,int max){
         int state=blink.getBlink_state();
         if(blinkapproval==2){
             if(oldapproval==1){
@@ -70,6 +71,23 @@ public class BlinkService extends BaseService<Blink,Integer, BlinkMapper>{
                     blink.setBlink_state(state+1);
                     try{
                         mapper.save(blink);
+                        if(state+1==3){
+                            blink.getStudent_number();
+                            blink.getBlink_content();
+                            blink.getBlink_number();
+                            blink.getBlink_state();
+                            Project project = Project.builder()
+                                    .project_number(max + 1)
+                                    .Project_Name(blink.getBlink_title())
+                                    .Project_Description(blink.getBlink_content())
+                                    .Project_College(blink.getBlink_college())
+                                    .Project_Field(blink.getBlink_field())
+                                    .create_time(blink.getCreate_time())
+                                    .Project_State(new Integer(4))
+                                    .build();
+                            projectService.getMapper().save(project);
+
+                        }
                         return true;
                     }catch (Exception e){
                         e.printStackTrace();
