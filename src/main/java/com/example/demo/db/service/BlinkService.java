@@ -54,7 +54,7 @@ public class BlinkService extends BaseService<Blink,Integer, BlinkMapper>{
         }
     }
 
-    public boolean changeState(Blink blink,int blinkapproval,int oldapproval,int max,int student_number){
+    public boolean changeState(Blink blink,int blinkapproval,int oldapproval,int max){
         int state=blink.getBlink_state();
         if(blinkapproval==2){
             if(oldapproval==1){
@@ -76,14 +76,14 @@ public class BlinkService extends BaseService<Blink,Integer, BlinkMapper>{
                 return true;
             }
             else{
-                if(state==2){
+                if(state==3){
                     return false;
                 }
                 else {
                     blink.setBlink_state(state+1);
                     try{
                         mapper.save(blink);
-                        if(state+1==2){
+                        if(state+1==3){
                             blink.getStudent_number();
                             blink.getBlink_content();
                             blink.getBlink_number();
@@ -125,32 +125,13 @@ public class BlinkService extends BaseService<Blink,Integer, BlinkMapper>{
                             List<ApplyBlink> list1 = applyBlinkService.findAll(specification);
 
                             for(int i=0;i<list1.size();i++){
-                                if(list1.get(i).getBlink_Approval()==1) {
-                                    TeamPK teamPK = TeamPK.builder().
-                                            projectnum(project.getProject_number())
-                                            .studentnum(list1.get(i).getApplyBlinkPK().getStudentnum())
-                                            .build();
-                                    Team team = Team.builder().teamPK(teamPK).join_time(new Date()).build();
-                                    teamService.getMapper().save(team);
-                                }
+                                TeamPK teamPK=TeamPK.builder().
+                                        projectnum(project.getProject_number())
+                                        .studentnum(list1.get(i).getApplyBlinkPK().getStudentnum())
+                                        .build();
+                                Team team=Team.builder().teamPK(teamPK).join_time(new Date()).build();
+                                teamService.getMapper().save(team);
                             }
-
-                            TeamPK teamPK1 = TeamPK.builder().
-                                    projectnum(project.getProject_number())
-                                    .studentnum(student_number)
-                                    .build();
-                            Team team1 = Team.builder().teamPK(teamPK1).join_time(new Date()).build();
-                            teamService.getMapper().save(team1);
-
-                            TeamPK teamPK2 = TeamPK.builder().
-                                    projectnum(project.getProject_number())
-                                    .studentnum(blink.getStudent_number())
-                                    .build();
-                            Team team2 = Team.builder().teamPK(teamPK2).join_time(new Date()).build();
-                            teamService.getMapper().save(team2);
-
-
-
 
                         }
                         return true;

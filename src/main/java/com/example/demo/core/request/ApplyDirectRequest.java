@@ -10,4 +10,5 @@ import lombok.Data;
 public class ApplyDirectRequest {
     private Integer project_number;
     private Integer teacher_number;
+    private Integer direct_approval;
 }

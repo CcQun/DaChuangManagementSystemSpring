@@ -439,11 +439,6 @@ public class ProjectController {
         return object;
     }
 
-    //申请指导老师
-    @RequestMapping("/applydirect")
-    public BaseResponse applydirect(@RequestBody ApplyDirectRequest request){
-        return null;
-    }
 
     //获得最大blink number
     public Integer getMaxProjectNumber() {
