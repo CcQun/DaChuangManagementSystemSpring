@@ -455,7 +455,7 @@ public class ProjectController {
         return maxProjectNumber;
     }
 
-    //查看自己申请项目的通过情况
+    //查看自己已加入的项目情况
     @ResponseBody
     @RequestMapping("/getMyJoinProject")
     public JSONObject getMyProject(@RequestBody MyProjectJoinRequest request) {
