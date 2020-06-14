@@ -6,12 +6,14 @@ USE DCMS;
 
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2020/5/21 8:54:25                            */
+/* Created on:     2020/6/14 10:04:15                           */
 /*==============================================================*/
 
 
 drop table if exists APPLY_BLINK;
 
+drop table if exists APPLY_DIRECT;
+程度DD
 drop table if exists APPLY_PROJECT;
 
 drop table if exists BLINK;
@@ -33,6 +35,17 @@ create table APPLY_BLINK
     Student_Number       int not null,
     Blink_Approval       int,
     primary key (Blink_Number, Student_Number)
+);
+
+/*==============================================================*/
+/* Table: APPLY_DIRECT                                          */
+/*==============================================================*/
+create table APPLY_DIRECT
+(
+    Project_Number       int not null,
+    Teacher_Number       int not null,
+    Direct_Approval      int,
+    primary key (Project_Number, Teacher_Number)
 );
 
 /*==============================================================*/
@@ -127,6 +140,12 @@ alter table APPLY_BLINK add constraint FK_APPLY_BLINK foreign key (Blink_Number)
 
 alter table APPLY_BLINK add constraint FK_APPLY_BLINK2 foreign key (Student_Number)
     references STUDENT (Student_Number) on delete restrict on update restrict;
+
+alter table APPLY_DIRECT add constraint FK_APPLY_DIRECT foreign key (Project_Number)
+    references PROJECT (Project_Number) on delete restrict on update restrict;
+
+alter table APPLY_DIRECT add constraint FK_APPLY_DIRECT2 foreign key (Teacher_Number)
+    references TEACHER (Teacher_Number) on delete restrict on update restrict;
 
 alter table APPLY_PROJECT add constraint FK_APPLY_PROJECT foreign key (Project_Number)
     references PROJECT (Project_Number) on delete restrict on update restrict;

@@ -443,6 +443,7 @@ public class ProjectController {
         return object;
     }
 
+
     //获得最大blink number
     public Integer getMaxProjectNumber() {
         List<Project> projects = projectService.findAll();

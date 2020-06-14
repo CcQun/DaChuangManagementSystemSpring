@@ -2,14 +2,12 @@ package com.example.demo.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.demo.core.request.ApplyBlinkRequest;
+import com.example.demo.core.request.ApplyDirectRequest;
 import com.example.demo.core.request.StudentRequest;
 import com.example.demo.core.response.BaseResponse;
 import com.example.demo.core.response.ListResponse;
 import com.example.demo.db.model.*;
-import com.example.demo.db.service.ApplyBlinkService;
-import com.example.demo.db.service.BlinkService;
-import com.example.demo.db.service.ProjectService;
-import com.example.demo.db.service.StudentService;
+import com.example.demo.db.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,40 +34,43 @@ public class ApplyController {
     @Autowired
     private final ProjectService projectService;
 
-    public ApplyController(ApplyBlinkService applyBlinkService, StudentService studentService, BlinkService blinkService, ProjectService projectService) {
+    @Autowired
+    private final ApplyDirectService applyDirectService;
+
+    public ApplyController(ApplyBlinkService applyBlinkService, StudentService studentService, BlinkService blinkService, ProjectService projectService, ApplyDirectService applyDirectService) {
         this.applyBlinkService = applyBlinkService;
         this.studentService = studentService;
         this.blinkService = blinkService;
         this.projectService = projectService;
+        this.applyDirectService = applyDirectService;
     }
 
     //查询blink申请情况
     @RequestMapping("/selectApply")
     public ListResponse<ApplyBlink> selectApply(@RequestBody ApplyBlinkRequest request) {
-        Integer blink_number=request.getBlink_number();
-        ListResponse<ApplyBlink> response=new ListResponse<>();
+        Integer blink_number = request.getBlink_number();
+        ListResponse<ApplyBlink> response = new ListResponse<>();
 
-        Specification<ApplyBlink> specification=new Specification<ApplyBlink>() {
+        Specification<ApplyBlink> specification = new Specification<ApplyBlink>() {
             @Override
             public Predicate toPredicate(Root<ApplyBlink> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-                List<Predicate> predicateList=new ArrayList<>();
-                Predicate shPredicate=criteriaBuilder.equal(root.get("applyBlinkPK").get("blinknum"),blink_number);
+                List<Predicate> predicateList = new ArrayList<>();
+                Predicate shPredicate = criteriaBuilder.equal(root.get("applyBlinkPK").get("blinknum"), blink_number);
                 predicateList.add(shPredicate);
-                Predicate[] predicates=new Predicate[predicateList.size()];
+                Predicate[] predicates = new Predicate[predicateList.size()];
                 return criteriaBuilder.and(predicateList.toArray(predicates));
             }
         };
 
         List<ApplyBlink> list = applyBlinkService.findAll(specification);
         List list2 = new ArrayList();
-        if(list.size()==0){
+        if (list.size() == 0) {
             response.setMsg("No apply");
-        }
-        else {
+        } else {
             response.setCode(1);
             response.setMsg("Have apply");
-            for(int i=0;i<list.size();i++){
-                ApplyStudent applyStudent=new ApplyStudent();
+            for (int i = 0; i < list.size(); i++) {
+                ApplyStudent applyStudent = new ApplyStudent();
                 List<Student> list1 = studentService.findAllByStudentNumber(list.get(i).getApplyBlinkPK().getStudentnum());
                 applyStudent.setBlinknum(list.get(i).getApplyBlinkPK().getBlinknum());
                 applyStudent.setBlink_approval(list.get(i).getBlink_Approval());
@@ -90,9 +91,9 @@ public class ApplyController {
     //根据ID查看学生信息
     @RequestMapping("/selectStudent")
     public BaseResponse selectStudent(@RequestBody StudentRequest request) {
-        Integer student_number=request.getStudent_number();
-        System.out.println("aaa"+student_number);
-        ListResponse<Student> response=new ListResponse<>();
+        Integer student_number = request.getStudent_number();
+        System.out.println("aaa" + student_number);
+        ListResponse<Student> response = new ListResponse<>();
         List<Student> list = studentService.findAllByStudentNumber(student_number);
         System.out.println(list);
         response.setData(list);
@@ -102,29 +103,29 @@ public class ApplyController {
     //审核blink申请加入状态
     @RequestMapping("/checkApply")
     public BaseResponse checkApply(@RequestBody ApplyBlinkRequest request) {
-        Integer blink_number=request.getBlink_number();
-        Integer student_number=request.getStudent_number();
-        Integer blink_approval=request.getBlink_approval();
+        Integer blink_number = request.getBlink_number();
+        Integer student_number = request.getStudent_number();
+        Integer blink_approval = request.getBlink_approval();
 
-        ApplyBlinkPK applyBlinkPK=new ApplyBlinkPK();
+        ApplyBlinkPK applyBlinkPK = new ApplyBlinkPK();
         applyBlinkPK.setBlinknum(blink_number);
         applyBlinkPK.setStudentnum(student_number);
 
-        Specification<ApplyBlink> specification=new Specification<ApplyBlink>() {
+        Specification<ApplyBlink> specification = new Specification<ApplyBlink>() {
 
             @Override
             public Predicate toPredicate(Root<ApplyBlink> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-                List<Predicate> predicateList=new ArrayList<>();
-                Predicate shPredicate=criteriaBuilder.equal(root.get("applyBlinkPK"),applyBlinkPK);
+                List<Predicate> predicateList = new ArrayList<>();
+                Predicate shPredicate = criteriaBuilder.equal(root.get("applyBlinkPK"), applyBlinkPK);
                 predicateList.add(shPredicate);
-                Predicate[] predicates=new Predicate[predicateList.size()];
+                Predicate[] predicates = new Predicate[predicateList.size()];
                 return criteriaBuilder.and(predicateList.toArray(predicates));
             }
         };
-        BaseResponse response=new ListResponse<>();
+        BaseResponse response = new ListResponse<>();
 
         List<ApplyBlink> list = applyBlinkService.findAll(specification);
-        if(list.size()==0){
+        if (list.size() == 0) {
             response.setCode(0);
             response.setMsg("无此学生或无此队伍");
             return response;
@@ -136,7 +137,7 @@ public class ApplyController {
         List<Blink> list1=blinkService.findAllByBlinkNumber(blinknum);
         Blink blink=list1.get(0);
         int max=this.getMaxProjectNumber();
-        boolean back1=blinkService.changeState(blink,blink_approval,oldapproval,max,student_number);
+        boolean back1=blinkService.changeState(blink,blink_approval,oldapproval,max);
         //boolean back1=blinkService.findAllByBlinkNumber(blinknum,blink_approval);
         if(!back1){
             response.setCode(0);
@@ -205,6 +206,23 @@ public class ApplyController {
             object.put("data",jsonlist);
             return object;
         }
+    }
+
+    //申请指导老师
+    @RequestMapping("/applydirect")
+    public BaseResponse applydirect(@RequestBody ApplyDirectRequest request){
+        ApplyDirectPK applyDirectPK = ApplyDirectPK.builder()
+                .projectnum(request.getProject_number())
+                .teachernum(request.getTeacher_number())
+                .build();
+        ApplyDirect applyDirect = ApplyDirect.builder()
+                .applyDirectPK(applyDirectPK)
+                .Direct_Approval(0)
+                .build();
+        applyDirectService.getMapper().save(applyDirect);
+        BaseResponse response = new BaseResponse();
+        response.setCode(1);
+        return response;
     }
 
     //获得最大project number
