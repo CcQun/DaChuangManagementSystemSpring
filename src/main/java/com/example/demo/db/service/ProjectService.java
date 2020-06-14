@@ -123,5 +123,4 @@ public class ProjectService extends BaseService<Project,Integer, ProjectMapper> 
         List<Project> list = mapper.findAll(example);
         return list;
     }
-
 }
