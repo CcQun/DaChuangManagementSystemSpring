@@ -1,13 +1,19 @@
 package com.example.demo.db.service;
 
-import com.example.demo.core.response.BaseResponse;
 import com.example.demo.db.mapper.ApplyBlinkMapper;
 import com.example.demo.db.mapper.BlinkMapper;
 import com.example.demo.db.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -20,11 +26,17 @@ public class BlinkService extends BaseService<Blink,Integer, BlinkMapper>{
     private final ApplyBlinkMapper applyBlinkMapper;
     @Autowired
     private final ProjectService projectService;
+    @Autowired
+    private final TeamService teamService;
+    @Autowired
+    private final ApplyBlinkService applyBlinkService;
 
-    public BlinkService(BlinkMapper blinkMapper, ApplyBlinkMapper applyBlinkMapper, ProjectService projectService) {
+    public BlinkService(BlinkMapper blinkMapper, ApplyBlinkMapper applyBlinkMapper, ProjectService projectService, TeamService teamService, ApplyBlinkService applyBlinkService) {
         this.BlinkMapper = blinkMapper;
         this.applyBlinkMapper=applyBlinkMapper;
         this.projectService = projectService;
+        this.teamService = teamService;
+        this.applyBlinkService = applyBlinkService;
     }
     public List<Blink> findAll(){
         return BlinkMapper.findAll();
@@ -77,6 +89,7 @@ public class BlinkService extends BaseService<Blink,Integer, BlinkMapper>{
                             blink.getBlink_number();
                             blink.getBlink_state();
                             Project project = Project.builder()
+                                    .Create_Student_Number(blink.getStudent_number())
                                     .project_number(max + 1)
                                     .Project_Name(blink.getBlink_title())
                                     .Project_Description(blink.getBlink_content())
@@ -86,6 +99,39 @@ public class BlinkService extends BaseService<Blink,Integer, BlinkMapper>{
                                     .Project_State(new Integer(4))
                                     .build();
                             projectService.getMapper().save(project);
+
+
+                           /* ApplyBlinkPK a=ApplyBlinkPK.builder().blinknum(blink.getBlink_number()).build();
+                            Example<ApplyBlinkPK> example=Example.of(a);
+                            List<ApplyBlinkPK> list1=applyBlinkPKMapper.findAll(example);
+                            System.out.println("aaaa"+list1.size());
+                            for(int i=0;i<list1.size();i++){
+                                TeamPK teamPK=TeamPK.builder().projectnum(project.getProject_number()).studentnum(list1.get(i).getStudentnum()).build();
+                                Team team=Team.builder().teamPK(teamPK).build();
+                                teamService.getMapper().save(team);
+                            }*/
+                            //加到Team中
+                            Specification<ApplyBlink> specification=new Specification<ApplyBlink>() {
+                                @Override
+                                public Predicate toPredicate(Root<ApplyBlink> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                                    List<Predicate> predicateList=new ArrayList<>();
+                                    Predicate shPredicate=criteriaBuilder.equal(root.get("applyBlinkPK").get("blinknum"),blink.getBlink_number());
+                                    predicateList.add(shPredicate);
+                                    Predicate[] predicates=new Predicate[predicateList.size()];
+                                    return criteriaBuilder.and(predicateList.toArray(predicates));
+                                }
+                            };
+
+                            List<ApplyBlink> list1 = applyBlinkService.findAll(specification);
+
+                            for(int i=0;i<list1.size();i++){
+                                TeamPK teamPK=TeamPK.builder().
+                                        projectnum(project.getProject_number())
+                                        .studentnum(list1.get(i).getApplyBlinkPK().getStudentnum())
+                                        .build();
+                                Team team=Team.builder().teamPK(teamPK).join_time(new Date()).build();
+                                teamService.getMapper().save(team);
+                            }
 
                         }
                         return true;
