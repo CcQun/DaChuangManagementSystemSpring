@@ -34,11 +34,15 @@ public class ApplyController {
     @Autowired
     private final ProjectService projectService;
 
-    public ApplyController(ApplyBlinkService applyBlinkService, StudentService studentService, BlinkService blinkService, ProjectService projectService) {
+    @Autowired
+    private final ApplyDirectService applyDirectService;
+
+    public ApplyController(ApplyBlinkService applyBlinkService, StudentService studentService, BlinkService blinkService, ProjectService projectService, ApplyDirectService applyDirectService) {
         this.applyBlinkService = applyBlinkService;
         this.studentService = studentService;
         this.blinkService = blinkService;
         this.projectService = projectService;
+        this.applyDirectService = applyDirectService;
     }
 
     //查询blink申请情况
@@ -207,7 +211,18 @@ public class ApplyController {
     //申请指导老师
     @RequestMapping("/applydirect")
     public BaseResponse applydirect(@RequestBody ApplyDirectRequest request){
-        return null;
+        ApplyDirectPK applyDirectPK = ApplyDirectPK.builder()
+                .projectnum(request.getProject_number())
+                .teachernum(request.getTeacher_number())
+                .build();
+        ApplyDirect applyDirect = ApplyDirect.builder()
+                .applyDirectPK(applyDirectPK)
+                .Direct_Approval(0)
+                .build();
+        applyDirectService.getMapper().save(applyDirect);
+        BaseResponse response = new BaseResponse();
+        response.setCode(1);
+        return response;
     }
 
     //获得最大project number
