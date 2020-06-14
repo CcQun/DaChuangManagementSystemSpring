@@ -45,4 +45,34 @@ public class ApplyDirectService extends BaseService<ApplyDirect, ApplyDirectPK, 
             }
         }
     }
+
+    public boolean insert(ApplyDirect applyDirect) {
+        try {
+            mapper.save(applyDirect);
+            return true;
+        } catch (Exception e) {
+            System.out.println("主键冲突");
+            return false;
+        }
+    }
+
+    public boolean findAllByDirectProject(ApplyDirect applyDirect, int approval) {
+
+        applyDirect.setDirect_Approval(approval);
+
+        try {
+
+            mapper.save(applyDirect);
+
+            return true;
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            return false;
+
+        }
+
+    }
 }

@@ -290,4 +290,47 @@ public class ApplyController {
             return response;
         }
     }
+
+    //教师查看申请
+    @RequestMapping("/ViewInstructorApplication")
+    public ListResponse<ApplyDirect> ViewInstructorApplication(@RequestBody ApplyDirectRequest request) {
+        Integer teacher_number=request.getTeacher_number();
+        ListResponse<ApplyDirect> response=new ListResponse<>();
+
+        Specification<ApplyDirect> specification=new Specification<ApplyDirect>() {
+            @Override
+            public Predicate toPredicate(Root<ApplyDirect> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                List<Predicate> predicateList=new ArrayList<>();
+                Predicate shPredicate=criteriaBuilder.equal(root.get("applyDirectPKv").get("teachernum"),teacher_number);
+                predicateList.add(shPredicate);
+                Predicate[] predicates=new Predicate[predicateList.size()];
+                return criteriaBuilder.and(predicateList.toArray(predicates));
+            }
+        };
+
+        List<ApplyDirect> list = applyDirectService.findAll(specification);
+        List list2 = new ArrayList();
+        if(list.size()==0){
+            response.setMsg("No apply");
+        }
+        else {
+            response.setCode(1);
+            response.setMsg("Have apply");
+            for(int i=0;i<list.size();i++){
+                ProjectStudent projectStudent=new ProjectStudent();
+                List<Project> list1 = projectService.findAllByProjectNumber(list.get(i).getApplyDirectPK().getProjectnum());
+                List<Student> list3 = studentService.findAllByStudentNumber(list1.get(0).getCreate_Student_Number());
+                projectStudent.setProject_College(list1.get(0).getProject_College());
+                projectStudent.setProject_Description(list1.get(0).getProject_Description());
+                projectStudent.setProject_Field(list1.get(0).getProject_Field());
+                projectStudent.setProject_Name(list1.get(0).getProject_Name());
+                projectStudent.setProject_number(list.get(i).getApplyDirectPK().getProjectnum());
+                projectStudent.setStudent_number(list1.get(0).getCreate_Student_Number());
+                projectStudent.setStudent_name(list3.get(0).getStudent_name());
+                list2.add(projectStudent);
+            }
+            response.setData(list2);
+        }
+        return response;
+    }
 }
