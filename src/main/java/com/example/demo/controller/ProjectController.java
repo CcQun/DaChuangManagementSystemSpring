@@ -273,6 +273,7 @@ public class ProjectController {
         int oldapproval=applyProject1.getProject_Approval();
         List<Project> list1=projectService.findAllByBlinkNumber(projectnum);
         Project project=list1.get(0);
+
         boolean back1=projectService.changeState(project,project_approval,oldapproval);
         if(!back1){
             response.setCode(0);
@@ -311,7 +312,7 @@ public class ProjectController {
         }
         int num = 0;
         for (int i = 0; i < projects.size(); i++) {
-            if (projects.get(i).getProject_Description().indexOf(str) != -1) {
+            if (projects.get(i).getProject_Description().indexOf(str) != -1) {//
                 jsonlist.add(new JSONObject());
                 jsonlist.get(num).put("project_number",projects.get(i).getProject_number());
                 jsonlist.get(num).put("create_teacher_number",projects.get(i).getCreate_Teacher_Number());

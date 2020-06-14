@@ -8,6 +8,7 @@ import com.example.demo.core.response.ListResponse;
 import com.example.demo.db.model.*;
 import com.example.demo.db.service.ApplyBlinkService;
 import com.example.demo.db.service.BlinkService;
+import com.example.demo.db.service.ProjectService;
 import com.example.demo.db.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -32,10 +33,14 @@ public class ApplyController {
     @Autowired
     private final BlinkService blinkService;
 
-    public ApplyController(ApplyBlinkService applyBlinkService, StudentService studentService, BlinkService blinkService) {
+    @Autowired
+    private final ProjectService projectService;
+
+    public ApplyController(ApplyBlinkService applyBlinkService, StudentService studentService, BlinkService blinkService, ProjectService projectService) {
         this.applyBlinkService = applyBlinkService;
         this.studentService = studentService;
         this.blinkService = blinkService;
+        this.projectService = projectService;
     }
 
     //查询blink申请情况
@@ -130,7 +135,8 @@ public class ApplyController {
         int oldapproval=applyBlink1.getBlink_Approval();
         List<Blink> list1=blinkService.findAllByBlinkNumber(blinknum);
         Blink blink=list1.get(0);
-        boolean back1=blinkService.changeState(blink,blink_approval,oldapproval);
+        int max=this.getMaxProjectNumber();
+        boolean back1=blinkService.changeState(blink,blink_approval,oldapproval,max);
         //boolean back1=blinkService.findAllByBlinkNumber(blinknum,blink_approval);
         if(!back1){
             response.setCode(0);
@@ -199,5 +205,17 @@ public class ApplyController {
             object.put("data",jsonlist);
             return object;
         }
+    }
+
+    //获得最大project number
+    public Integer getMaxProjectNumber() {
+        List<Project> projects = projectService.findAll();
+        Integer maxProjectNumber = 0;
+        for (int i = 0; i < projects.size(); i++) {
+            if (projects.get(i).getProject_number() > maxProjectNumber) {
+                maxProjectNumber = projects.get(i).getProject_number();
+            }
+        }
+        return maxProjectNumber;
     }
 }
