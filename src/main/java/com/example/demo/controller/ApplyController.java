@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.example.demo.core.request.ApplyBlinkRequest;
 import com.example.demo.core.request.ApplyDirectRequest;
+import com.example.demo.core.request.ApplyDirectRequest2;
 import com.example.demo.core.request.StudentRequest;
 import com.example.demo.core.response.BaseResponse;
 import com.example.demo.core.response.ListResponse;
@@ -235,5 +236,58 @@ public class ApplyController {
             }
         }
         return maxProjectNumber;
+    }
+
+    //老师审批指导老师请求
+    @RequestMapping("/checkDirectApply")
+    public BaseResponse checkDirectApply(@RequestBody ApplyDirectRequest2 request) {
+        Integer project_number = request.getProject_number();
+        Integer teacher_number = request.getTeacher_number();
+        Integer direct_approval = request.getDirect_approval();
+
+        ApplyDirectPK applyDirectPK = new ApplyDirectPK();
+        applyDirectPK.setProjectnum(project_number);
+        applyDirectPK.setTeachernum(teacher_number);
+
+        Specification<ApplyDirect> specification = new Specification<ApplyDirect>() {
+
+            @Override
+            public Predicate toPredicate(Root<ApplyDirect> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                List<Predicate> predicateList = new ArrayList<>();
+                Predicate shPredicate = criteriaBuilder.equal(root.get("applyDirectPK"), applyDirectPK);
+                predicateList.add(shPredicate);
+                Predicate[] predicates = new Predicate[predicateList.size()];
+                return criteriaBuilder.and(predicateList.toArray(predicates));
+            }
+        };
+        BaseResponse response = new ListResponse<>();
+
+        List<ApplyDirect> list = applyDirectService.findAll(specification);
+        if (list.size() == 0) {
+            response.setCode(0);
+            response.setMsg("项目没有向该老师发起申请");
+            return response;
+        }
+        ApplyDirect applyDirect1 = list.get(0);
+
+        List<Project> list1 = projectService.findAllByProjectNumber(project_number);
+        Project project = list1.get(0);
+
+        if (project.getDirect_Teacher_Number() != null) {
+            response.setCode(0);
+            response.setMsg("此队伍已有其他指导老师");
+            return response;
+        } else {
+            boolean back = applyDirectService.changeState(applyDirect1, project, direct_approval, teacher_number);
+
+            if (back) {
+                response.setCode(1);
+                response.setMsg("审批成功");
+            } else {
+                response.setCode(0);
+                response.setMsg("审批失败");
+            }
+            return response;
+        }
     }
 }
