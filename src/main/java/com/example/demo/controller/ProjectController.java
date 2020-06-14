@@ -42,11 +42,15 @@ public class ProjectController {
     @Autowired
     private final TeacherService teacherService;
 
-    public ProjectController(ApplyProjectService applyProjectService, ProjectService projectService, StudentService studentService, TeacherService teacherService) {
+    @Autowired
+    private final TeamService teamService;
+
+    public ProjectController(ApplyProjectService applyProjectService, ProjectService projectService, StudentService studentService, TeacherService teacherService, TeamService teamService) {
         this.applyProjectService = applyProjectService;
         this.projectService=projectService;
         this.studentService = studentService;
         this.teacherService = teacherService;
+        this.teamService = teamService;
     }
 
     //发布project
@@ -449,5 +453,87 @@ public class ProjectController {
             }
         }
         return maxProjectNumber;
+    }
+
+    //查看自己申请项目的通过情况
+    @ResponseBody
+    @RequestMapping("/getMyJoinProject")
+    public JSONObject getMyProject(@RequestBody MyProjectJoinRequest request) {
+        int student_num=request.getStudent_number();
+
+        Specification<Team> specification=new Specification<Team>() {
+            @Override
+            public Predicate toPredicate(Root<Team> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                List<Predicate> predicateList=new ArrayList<>();
+                Predicate shPredicate=criteriaBuilder.equal(root.get("teamPK").get("studentnum"),student_num);
+                predicateList.add(shPredicate);
+                Predicate[] predicates=new Predicate[predicateList.size()];
+                return criteriaBuilder.and(predicateList.toArray(predicates));
+            }
+        };
+
+        List<Team> list = teamService.findAll(specification);
+        if(list.size()==0){
+            JSONObject object=new JSONObject();
+            object.put("code",0);
+            object.put("msg","noproject");
+
+            return object;
+        }
+        else {
+            List<JSONObject> jsonlist=new ArrayList<JSONObject>();
+
+            for(int i=0;i<list.size();i++){
+                int project_num=list.get(i).getTeamPK().getProjectnum();
+                List<Project> list1=projectService.findAllByBlinkNumber(project_num);
+                jsonlist.add(new JSONObject());
+                jsonlist.get(i).put("project_number",list1.get(0).getProject_number());
+                jsonlist.get(i).put("project_name",list1.get(0).getProject_Name());
+                jsonlist.get(i).put("project_state",list1.get(0).getProject_State());
+                jsonlist.get(i).put("project_description",list1.get(0).getProject_Description());
+                jsonlist.get(i).put("project_field",list1.get(0).getProject_Field());
+                jsonlist.get(i).put("project_college",list1.get(0).getProject_College());
+                jsonlist.get(i).put("project_create_teacher_number",list1.get(0).getCreate_Teacher_Number());
+                jsonlist.get(i).put("project_direct_teacher_number",list1.get(0).getDirect_Teacher_Number());
+                if(list1.get(0).getDirect_Teacher_Number()==null){
+                    jsonlist.get(i).put("project_direct_teacher_name",null);
+                }
+                else {
+                    jsonlist.get(i).put("project_direct_teacher_name",teacherService.findAllByTeacherNumber(list1.get(0).getDirect_Teacher_Number()).get(0).getTeacher_name());
+                }
+                jsonlist.get(i).put("project_create_student_number",list1.get(0).getCreate_Student_Number());
+                jsonlist.get(i).put("project_create_time",list1.get(0).getCreate_time());
+
+
+
+                Specification<Team> specification1=new Specification<Team>() {
+                    @Override
+                    public Predicate toPredicate(Root<Team> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                        List<Predicate> predicateList=new ArrayList<>();
+                        Predicate shPredicate=criteriaBuilder.equal(root.get("teamPK").get("projectnum"),project_num);
+                        predicateList.add(shPredicate);
+                        Predicate[] predicates=new Predicate[predicateList.size()];
+                        return criteriaBuilder.and(predicateList.toArray(predicates));
+                    }
+                };
+
+                //找到同组的学生
+                List<Team> list2 = teamService.findAll(specification1);
+                int nm=1;
+                for(int j=0;j<list2.size();j++){
+                    //jsonlist.get(i).put("studentid"+j,list2.get(j).getTeamPK().getStudentnum());
+                    String student_name=studentService.findNameByStudentNumber(list2.get(j).getTeamPK().getStudentnum());
+                    jsonlist.get(i).put("studentname"+j,student_name);
+                }
+
+            }
+
+            JSONObject object=new JSONObject();
+            object.put("code",1);
+            object.put("msg","yes");
+            object.put("data",jsonlist);
+            return object;
+        }
+
     }
 }
