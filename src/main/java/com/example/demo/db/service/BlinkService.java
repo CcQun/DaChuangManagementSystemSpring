@@ -76,14 +76,14 @@ public class BlinkService extends BaseService<Blink,Integer, BlinkMapper>{
                 return true;
             }
             else{
-                if(state==3){
+                if(state==2){
                     return false;
                 }
                 else {
                     blink.setBlink_state(state+1);
                     try{
                         mapper.save(blink);
-                        if(state+1==3){
+                        if(state+1==2){
                             blink.getStudent_number();
                             blink.getBlink_content();
                             blink.getBlink_number();
