@@ -55,7 +55,7 @@ public class ProjectService extends BaseService<Project,Integer, ProjectMapper> 
         return list;
     }
 
-    public boolean changeState(Project project,int projectapproval,int oldapproval) {
+    public boolean changeState(Project project,int projectapproval,int oldapproval,int student_num) {
         int state = project.getProject_State();
         if (projectapproval == 2) {
             if (oldapproval == 1) {
@@ -103,6 +103,16 @@ public class ProjectService extends BaseService<Project,Integer, ProjectMapper> 
                                 teamService.getMapper().save(team);
                             }
                         }
+
+                        TeamPK teamPK2=TeamPK.builder().
+                                projectnum(project.getProject_number())
+                                .studentnum(student_num
+                                )
+                                .build();
+                        Team team1=Team.builder().teamPK(teamPK2).join_time(new Date()).build();
+                        teamService.getMapper().save(team1);
+
+
                     }
 
                     try {

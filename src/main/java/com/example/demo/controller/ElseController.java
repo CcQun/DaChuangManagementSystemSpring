@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.List;
 
 
+
 /**
  * @Author CcQun、ZyMeng、ZYing、LhRan、LcYao
  * @Date 2020/5/16 13:28
@@ -31,6 +32,7 @@ public class ElseController {
         this.studentService = studentService;
         this.teacherService = teacherService;
     }
+
 
 
     //上传图片
@@ -48,7 +50,7 @@ public class ElseController {
         int size = (int) file.getSize();
         System.out.println(fileName + "-->" + size);
 
-        String path = "D:\\Aa大学文件\\处理事项\\大三下\\课程-JavaEE\\DaChuangManagementSystemSpring\\src\\main\\resources\\static";
+        String path = "D:\\Program\\IDEA\\back2\\DaChuangManagementSystemSpring\\src\\main\\resources\\static";
         File dest = new File(path + "/" + fileName);
         if(!dest.getParentFile().exists()){ //判断文件父目录是否存在
             dest.getParentFile().mkdir();

@@ -278,7 +278,7 @@ public class ProjectController {
         List<Project> list1=projectService.findAllByBlinkNumber(projectnum);
         Project project=list1.get(0);
 
-        boolean back1=projectService.changeState(project,project_approval,oldapproval);
+        boolean back1=projectService.changeState(project,project_approval,oldapproval,student_number);
         if(!back1){
             response.setCode(0);
             response.setMsg("已满员");

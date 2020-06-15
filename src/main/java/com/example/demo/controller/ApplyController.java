@@ -301,7 +301,7 @@ public class ApplyController {
             @Override
             public Predicate toPredicate(Root<ApplyDirect> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
                 List<Predicate> predicateList=new ArrayList<>();
-                Predicate shPredicate=criteriaBuilder.equal(root.get("applyDirectPKv").get("teachernum"),teacher_number);
+                Predicate shPredicate=criteriaBuilder.equal(root.get("applyDirectPK").get("teachernum"),teacher_number);
                 predicateList.add(shPredicate);
                 Predicate[] predicates=new Predicate[predicateList.size()];
                 return criteriaBuilder.and(predicateList.toArray(predicates));

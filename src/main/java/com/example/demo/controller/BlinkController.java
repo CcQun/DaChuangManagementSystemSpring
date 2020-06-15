@@ -96,7 +96,7 @@ public class BlinkController {
                 .student_number(request.getStudent_number())
                 .blink_title(request.getBlink_title())
                 .blink_content(request.getBlink_content())
-                .creat_time(new Date())
+                .create_time(new Date())
                 .blink_college(request.getBlink_college())
                 .blink_field(request.getBlink_field())
                 .blink_state(new Integer(0))
@@ -149,7 +149,7 @@ public class BlinkController {
                     .blink_field(blink1.getBlink_field())
                     .blink_state(blink1.getBlink_state())
                     .blink_title(blink1.getBlink_title())
-                    .create_time(blink1.getCreat_time())
+                    .create_time(blink1.getCreate_time())
                     .student_name(student_name)
                     .build();
             res.add(bwsn);
@@ -196,7 +196,7 @@ public class BlinkController {
                 jsonlist.get(num).put("student_name",studentService.findAllByStudentNumber(studentnum).get(0).getStudent_name());
                 jsonlist.get(num).put("blink_title",blinks.get(i).getBlink_title());
                 jsonlist.get(num).put("blink_content",blinks.get(i).getBlink_content());
-                jsonlist.get(num).put("create_time",blinks.get(i).getCreat_time());
+                jsonlist.get(num).put("create_time",blinks.get(i).getCreate_time());
                 jsonlist.get(num).put("blink_college",blinks.get(i).getBlink_college());
                 jsonlist.get(num).put("blink_field",blinks.get(i).getBlink_field());
                 jsonlist.get(num).put("blink_state",blinks.get(i).getBlink_state());
@@ -212,7 +212,7 @@ public class BlinkController {
                 jsonlist.get(num).put("student_name",studentService.findAllByStudentNumber(studentnum).get(0).getStudent_name());
                 jsonlist.get(num).put("blink_title",blinks.get(i).getBlink_title());
                 jsonlist.get(num).put("blink_content",blinks.get(i).getBlink_content());
-                jsonlist.get(num).put("create_time",blinks.get(i).getCreat_time());
+                jsonlist.get(num).put("create_time",blinks.get(i).getCreate_time());
                 jsonlist.get(num).put("blink_college",blinks.get(i).getBlink_college());
                 jsonlist.get(num).put("blink_field",blinks.get(i).getBlink_field());
                 jsonlist.get(num).put("blink_state",blinks.get(i).getBlink_state());
