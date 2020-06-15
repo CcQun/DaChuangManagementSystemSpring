@@ -94,13 +94,14 @@ public class ProjectService extends BaseService<Project,Integer, ProjectMapper> 
                         List<ApplyProject> list1 = applyProjectService.findAll(specification);
 
                         for(int i=0;i<list1.size();i++){
-                            TeamPK teamPK=TeamPK.builder().
-                                    projectnum(project.getProject_number())
-                                    .studentnum(list1.get(i).getApplyProjectPK().getStudentnum())
-                                    .build();
-                            Team team=Team.builder().teamPK(teamPK).join_time(new Date()).build();
-                            teamService.getMapper().save(team);
-
+                            if(list1.get(i).getProject_Approval()==1){
+                                TeamPK teamPK=TeamPK.builder().
+                                        projectnum(project.getProject_number())
+                                        .studentnum(list1.get(i).getApplyProjectPK().getStudentnum())
+                                        .build();
+                                Team team=Team.builder().teamPK(teamPK).join_time(new Date()).build();
+                                teamService.getMapper().save(team);
+                            }
                         }
                     }
 
