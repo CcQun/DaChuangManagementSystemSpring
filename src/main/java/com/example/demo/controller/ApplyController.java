@@ -137,7 +137,7 @@ public class ApplyController {
         List<Blink> list1=blinkService.findAllByBlinkNumber(blinknum);
         Blink blink=list1.get(0);
         int max=this.getMaxProjectNumber();
-        boolean back1=blinkService.changeState(blink,blink_approval,oldapproval,max);
+        boolean back1=blinkService.changeState(blink,blink_approval,oldapproval,max,student_number);
         //boolean back1=blinkService.findAllByBlinkNumber(blinknum,blink_approval);
         if(!back1){
             response.setCode(0);
